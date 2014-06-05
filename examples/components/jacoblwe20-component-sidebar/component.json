@@ -1,0 +1,14 @@
+{
+  "name": "sidebar",
+  "scripts": [
+    "index.js",
+    "view.js"
+  ],
+  "styles": [
+    "style.css"
+  ],
+  "dependencies": {
+    "component/emitter": "*"
+  },
+  "repo": "https://raw.githubusercontent.com/jacoblwe20/component-sidebar"
+}

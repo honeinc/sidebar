@@ -1,0 +1,6 @@
+{
+  "name": "exampleapp",
+  "dependencies": {
+    "jacoblwe20/component-sidebar" : "master"
+  }
+}
