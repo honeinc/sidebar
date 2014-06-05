@@ -1,0 +1,13 @@
+{
+    "name": "sidebar",
+    "scripts": [
+        "index.js",
+        "view.js"
+    ],
+    "styles": [
+        "style.css"
+    ],
+    "dependencies": {
+        "component/emitter": "*"
+    }
+}
