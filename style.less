@@ -215,17 +215,15 @@
     user-select: @value;
 }
 
-.sidebar-init{
+[data-sidebar]{
     width: 253px;
     position:fixed;
     top: 44px;
     bottom: 0;
     left: 0;
-    background: @darkGrey;
     transition-duration: 0.3s;
     z-index: 1000;
     font-size: 0.75em;
-    color: white;
     overflow: visible;
     .sidebar-wrapper {
         position: absolute;
@@ -283,121 +281,7 @@
             .transform( translate3d( 0, 0, 0 ) );
         }
         p {
-            color : @lightGrey;
-            text-transform: uppercase;
             letter-spacing: 1px;
-            font-family: 'Proxima N W15 Bold';
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            li {
-                position: relative;
-                line-height: 4em;
-                padding: 0 1em;
-                border-bottom: 1px solid rgba( 255,255,255,.2);
-                &[data-emit]{
-                    cursor: pointer;
-                    &:hover {
-                        background: fade( #fff, 5%);
-                        &:active {
-                            background: transparent;
-                            box-shadow: inset 0px 0px 3px fade( black, 30% );
-                        }
-                    }
-                }
-                .right-button {
-                    padding: 5px 10px;
-                    display: inline-block;
-                    width: auto;
-                    font-size: 12px;
-                    margin: 5px 7px 5px 5px;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    line-height: 1.5em;
-                    i {
-                        height: 1.5em;
-                        margin-right: 0;
-                        padding: 0 1em;
-                        border-right: 1px solid rgba(0,0,0,0.3);
-                        &:last-of-type {
-                            border-right: 0;
-                            padding-right: 0;
-                        }
-                        &:first-of-type {
-                            padding-left: 0;
-                        }
-                    }
-                }
-                .selected-show{
-                    display: none;
-                }
-                &.selected {
-                    border-left: 5px solid @sideBarGreen;
-                    .selected-show {
-                        display: block;
-                    }
-                }
-                i {
-                    margin-right: 1em;
-                    width: 1em;
-                }
-                a {
-                    color : #fff;
-                    display: block;
-                    min-height: 100%;
-                    min-width: 100%;
-                }
-                &[data-toggle]{
-                    cursor: pointer;
-                    user-select: none; 
-                    position: relative;
-                    transition: all .3s;
-                    &:before{
-                        position:absolute;
-                        top:50%;
-                        margin-top: -.5em;
-                        right: 1em;
-                        height: 1em;
-                        content: "";
-                        display: block;
-                        width: 2em;
-                        border-radius: 20px;
-                        background: #222;
-                        .transition( .15s );
-                        border: 1px solid inherit;
-                        box-sizing: border-box;
-                    }
-                    &.active:before{
-                        background: #999;
-                    }
-                    &:after{
-                        -webkit-transition : all .15s;
-                        position: absolute;
-                        top: 50%;
-                        height: 1em;
-                        margin-top: -.5em;
-                        content: "";
-                        display: block;
-                        width: 1em;
-                        border-radius: 1em;
-                        border: 1px solid #ccc;
-                        background: #fefefe;
-                        box-shadow: 0px 0px 1px rgba( 0, 0, 0, 0.5 );
-                        box-sizing: border-box;
-                        right: 2em;
-                    }
-                    &.active:after{
-                        .transform(translate( 1em, 0 ));
-                    }
-                }
-            }
-        }
-        h4 {
-            padding: 1em;
-            letter-spacing: .1em;
         }
     }
     &.back {
@@ -417,9 +301,6 @@
         margin: 5px 7px 5px 5px;
         position: absolute;
         top: 0;
-        &.bright-button {
-            background: @sideBarBlue !important;
-        }
     }
     nav {
         box-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -439,90 +320,6 @@
             letter-spacing: 1px;
             color: @lightGrey;
         }
-    }
-
-    /* seems this is almost a dupe from above */
-    ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0 0.5em;
-        li {
-            .user-select( none );
-            line-height: 4em;
-            padding: 0 .5em;
-            border-bottom: 1px solid @neutralGrey;
-            &[data-emit]{
-                cursor: pointer;
-                &:hover {
-                    background: fade( #fff, 10%);
-                    &:active {
-                        background: transparent;
-                        box-shadow: inset 0px 0px 3px fade( black, 30% );
-                    }
-                }
-            }
-
-            &.selected {
-                border-left: 5px solid @sideBarGreen;
-            }
-            i {
-                margin-right: 1em;
-            }
-            a {
-                color : #fff;
-                display: block;
-                min-height: 100%;
-                min-width: 100%;
-            }
-            &[data-toggle]{
-                cursor: pointer;
-                user-select: none; 
-                position: relative;
-                transition: all .3s;
-                &:before{
-                    position:absolute;
-                    top:50%;
-                    margin-top: -.5em;
-                    right: 1em;
-                    height: 1em;
-                    content: "";
-                    display: block;
-                    width: 2em;
-                    border-radius: 20px;
-                    background: @neutralGrey;
-                    .transition( .15s );
-                    border: 1px solid inherit;
-                    box-sizing: border-box;
-                }
-                &.active:before{
-                    background: @neutralGrey;
-                }
-                &:after{
-                    -webkit-transition : all .15s;
-                    position: absolute;
-                    top: 50%;
-                    height: 1em;
-                    margin-top: -.5em;
-                    content: "";
-                    display: block;
-                    width: 1em;
-                    border-radius: 1em;
-                    border: 1px solid #ccc;
-                    background: @lightGrey;
-                    border-color: @lightGrey;
-                    box-shadow: 0px 0px 1px rgba( 0, 0, 0, 0.5 );
-                    box-sizing: border-box;
-                    right: 2em;
-                }
-                &.active:after{
-                    .transform(translate( 1em, 0 ));
-                    background: @sideBarBlue;
-                    border-color: @sideBarBlue;
-                }
-            }
-
-        }
-
     }
     .sidebar-open-tab {
         display: none;
@@ -545,9 +342,6 @@
             display: table;
             text-align: center;
             cursor: pointer;
-            &:hover {
-                background: @darkGrey;
-            }
             &:before {
                 font-size: 1em;
                 display: table-cell;
@@ -560,7 +354,6 @@
         }
         &.show {
             .sidebar-open-tab {
-                background-color: #222;
                 width: 5px;
                 &:before {
                     font-size: 1em;
