@@ -8,6 +8,8 @@
         "style.css"
     ],
     "dependencies": {
-        "component/emitter": "*"
+        "component/emitter": "*",
+        "honeinc/emit": "master",
+        "andyburke/node-extend": "1.2.2"
     }
 }

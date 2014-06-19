@@ -1,2 +1,6 @@
+build
+examples/build
 node_modules
+components
+examples/components
 npm-debug.log
