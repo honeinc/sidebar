@@ -367,122 +367,155 @@ Emitter.prototype.hasListeners = function(event){
 
 });
 require.register("jacoblwe20-component-sidebar/index.js", function(exports, require, module){
-
 /*
  * Sidebar - Manages sidebar & sidebar views
  */
+/* global Event, require, module */
+'use strict';
 
-var emitter = require('emitter'),
-    SidebarView = require('./view');
+var emitter = require( 'emitter' ),
+    emit = require( 'emit' ),
+    SidebarView = require( './view' );
 
 module.exports = Sidebar;
+module.exports.SidebarView = SidebarView;
 
-function Sidebar ( ) {
+function Sidebar() {
     emitter( this );
-    this._views = [ ];
-    this._viewsById = { };
+    this._views = [];
+    this._viewsById = {};
+    this.addedClasses = {};
+
+    // do view check
+    this.el = document.querySelector( '[data-sidebar]' );
+    this._teardownViews();
+    this._homeView = null;
+    this._currentView = null;
+    this._views = [];
+    this._viewsById = {};
+
+    this.nav = document.createElement( 'nav' );
+
+    // signify inialization
+    if ( this.el ) {
+        this.el.appendChild( this.nav );
+
+        if ( !this.wrapper ) {
+            this.wrapper = document.createElement( 'div' );
+            this.wrapper.classList.add( 'sidebar-wrapper' );
+            this.el.appendChild( this.wrapper );
+        }
+        this.el.classList.add( 'sidebar-init' );
+    }
+    this.addListeners();
 }
 
-function mixin ( obj, obj2 ) {
-    for ( var key in obj2 ) {
-        obj[ key ] = obj2[ key ];
+Sidebar.prototype.addView = function( template, opts, callback ) {
+    if ( !template ) return null;
+
+    opts = opts || {};
+    // globalish nav
+    opts.nav = this.nav;
+
+    var isReady = this.isSidebarView( template ),
+        view = isReady ? template : null;
+
+    if ( !view ) {
+        view = new SidebarView( template, opts );
     }
-    return obj;
-}
-
-Sidebar.prototype.SidebarView = SidebarView;
-
-Sidebar.prototype.addView = function ( template, opts, callback ) {
-
-    var view,
-        options = {
-            menuBehaviors : [{
-                behavior : 'sidebar.back',
-                label : '&lsaquo; Back',
-                position : 'left'
-            }],
-            back: true
-        };
-    if ( !template ) return;
-    if ( this.isSidebarView( template ) ) {
-        // if view is passed
-        return this._cacheView( template );
+    else {
+        view.setOptions( opts );
     }
 
-    options = mixin( options, opts || {});
 
-
-    if ( !options.menuBehaviors ) {
-        options.menuBehaviors = menuBehaviors;
+    if ( ( opts && opts.home ) || !this._homeView || view.options.home ) {
+        this._homeView = view;
     }
 
-    view = new this.SidebarView( template, options );
-
-    if ( options.default || !this._defaultView ) {
-        this._defaultView = view;
-    }
-    // if there is no other views auto open.
-    if ( ! this._currentView ) {
-        this._currentView = view;
-        view.open( );
-    }
-
-    view.once( 'ready', this._onViewReady.bind( this, callback, null ) );
-    view.once( 'error', this._onViewReady.bind( this, callback ) );
     // this helps handling the view space
-    view.on('open', this._onViewOpening.bind( this, view ) );
+    view.on( 'open', this._onViewOpening.bind( this, view ) );
+
+    if ( isReady ) {
+        this._onViewReady( callback, null, view );
+    }
+    else {
+        view.once( 'ready', this._onViewReady.bind( this, callback, null ) );
+        view.once( 'error', this._onViewReady.bind( this, callback ) );
+    }
+
+    // if there is no other views auto open.
+    if ( !this._currentView ) {
+        this._currentView = view;
+        view.open();
+    }
+
     return view;
 };
 
-Sidebar.prototype.removeView = function ( view ) {
+Sidebar.prototype.addListeners = function ( ) {
+    emit.on('sidebar.back', this.back.bind( this ));
+    emit.on('sidebar.close', this.close.bind( this ));
+    emit.on('sidebar.open', this.open.bind( this ));
+    emit.on('sidebar.toggle', this.toggle.bind( this ));
+};
+
+Sidebar.prototype.removeView = function( view ) {
     // dont bother if not a proper view
     if ( !this.isSidebarView( view ) ) return;
     var id = view._id;
 
-    function outView ( ) {
+    function outView( _view ) {
         if ( id === _view.id ) return false;
         return true;
     }
 
-    // if remove view is current go to default
+    // if remove view is current go to home
     if ( this._currentView._id === view.id ) {
-        this.default( );
+        this.home();
     }
 
     if ( this._viewsById[ id ] ) delete this._viewsById[ id ];
     this._views = this._views.filter( outView );
-    view.remove( );
+    view.remove();
 };
 
-Sidebar.prototype.setCurrentView = function ( view ) {
+Sidebar.prototype.setCurrentView = function( view ) {
     var id = view._id,
         _view = this._viewsById[ id ];
     if ( _view ) {
-        _view.open( );
+        _view.open();
     }
 };
 
-
-Sidebar.prototype.default = function ( ) {
-    if ( !this.isSidebarView( this._defaultView ) ) return;
-    if ( this._currentView._id === this._defaultView._id ) return;
-    this._defaultView.open( );
+Sidebar.prototype.getView = function( id ) {
+    return this._viewsById[ id ];
 };
 
-Sidebar.prototype.back = function ( ) {
+Sidebar.prototype.getCurrentView = function() {
+    return this._currentView;
+};
+
+Sidebar.prototype.home = function() {
+    if ( !this.isSidebarView( this._homeView ) ) return;
+    if ( this._currentView._id === this._homeView._id ) return;
+    this._homeView.open();
+};
+
+Sidebar.prototype.back = function() {
     // see if a proper parent view is set
-    this.el.classList.add('back');
+    this.el.classList.add( 'back' );
     if ( this.isSidebarView( this._currentView ) && this._currentView._parentView ) {
         var _parent = this._currentView._parentView;
         if ( this.isSidebarView( _parent ) ) {
-            return _parent.open( );
+            return _parent.open();
         }
     }
-    // if not go to default
-    this.default( );
+    // if not go to home
+    this.home();
 };
 
-Sidebar.prototype.open = function ( data ) {
+Sidebar.prototype.open = function( data ) {
+    this.state = 1;
     if ( this.el ) this.el.classList.add( 'show' );
     if ( data instanceof Event ) {
         data = null;
@@ -490,7 +523,8 @@ Sidebar.prototype.open = function ( data ) {
     this.emit( 'open', data );
 };
 
-Sidebar.prototype.close = function ( data ) {
+Sidebar.prototype.close = function( data ) {
+    this.state = 0;
     if ( this.el ) this.el.classList.remove( 'show' );
     if ( data instanceof Event ) {
         data = null;
@@ -498,221 +532,839 @@ Sidebar.prototype.close = function ( data ) {
     this.emit( 'close', data );
 };
 
-Sidebar.prototype.toggle = function ( ) {
-    if ( this.el ) this.el.classList.toggle( 'show' );
-    if ( this.el.classList.contains( 'show' ) ){
-        return this.emit( 'open' );
+Sidebar.prototype.toggle = function() {
+    if ( this.state ) {
+        this.close();
+        return;
     }
-    this.emit( 'close' );
+    this.open();
 };
 
 // width is only temp till next open.
-Sidebar.prototype.expand = function ( width ) {
+Sidebar.prototype.expand = function( width ) {
     if ( !this.el ) return;
     this.el.style.width = typeof width === 'number' ? width + 'px' : width;
+    this.emit( 'expanded', {
+        width: width
+    } );
 };
 
-Sidebar.prototype.isSidebarView = function ( view ) {
-    return ( typeof view === 'object' && view instanceof SidebarView && !view._removed);
+Sidebar.prototype.addClass = function( c ) {
+    if ( !this.el ) return;
+    this.el.classList.add( c );
+    this.addedClasses[ c ] = true;
+    this.emit( 'classAdded', c );
 };
 
-Sidebar.prototype._appendView = function ( view ) {
+Sidebar.prototype.removeClass = function( c ) {
+    if ( !this.el ) return;
+    this.el.classList.remove( c );
+    delete this.addedClasses[ c ];
+    this.emit( 'classRemoved', c );
+};
+
+Sidebar.prototype.isSidebarView = function( view ) {
+    return ( typeof view === 'object' && view instanceof SidebarView && !view._removed );
+};
+
+Sidebar.prototype.isOpen = function() {
+    return this.state ? true : false;
+};
+
+Sidebar.prototype._appendView = function( view ) {
     if ( this.wrapper ) this.wrapper.appendChild( view.el );
 };
 
-Sidebar.prototype._handleAnimations = function ( ) {
-    var el = this.el;
-    this._currentView.once('animation:complete', function ( ) { 
-        el.classList.remove('animating');
-        el.classList.remove('back');
-        if ( this._prevView ){
-            this._prevView.el.classList.remove('sidebar-view-out');
-            this._prevView =  null;
+Sidebar.prototype._handleAnimations = function() {
+    this._currentView.once( 'animation:complete', function() {
+        this.el.classList.remove( 'animating' );
+        this.el.classList.remove( 'back' );
+        if ( this._prevView ) {
+            this._prevView.el.classList.remove( 'sidebar-view-out' );
+            this._prevView = null;
         }
-    }.bind( this ));
+    }.bind( this ) );
 };
 
-Sidebar.prototype._cacheView = function ( view ) {
+Sidebar.prototype._cacheView = function( view ) {
     // no doups
-    if ( this._viewsById[ view._id ] ) return;
+    if ( this._viewsById[ view._id ] ) {
+        this._viewsById[ view._id ].remove();
+    }
+
+    this._appendView( view );
     this._viewsById[ view._id ] = view;
     this._views.push( view );
     this.emit( 'view.added', view );
+    return view;
 };
 
-Sidebar.prototype._teardownViews = function ( ) {
+Sidebar.prototype._teardownViews = function() {
     if ( !this._views.length ) return;
-    this._views.forEach(function( view ){
+    this._views.forEach( function( view ) {
         view.remove();
         this.emit( 'view.removed', view );
-    }.bind( this ));
+    }.bind( this ) );
 };
 
-Sidebar.prototype.init = function ( e ) {
-    // do view check
-    this.el = document.querySelector('[data-sidebar]');
-    this._teardownViews( );
-    this._defaultView = null;
-    this._currentView = null;
-    this._views = [ ];
-    this._viewsById = { };
-
-    // signify inialization
-    if ( this.el ) {
-        if ( !this.wrapper ) {
-            this.wrapper = document.createElement('div');
-            this.wrapper.classList.add('sidebar-wrapper');
-            this.el.appendChild( this.wrapper );
-        }
-        this.el.classList.add('sidebar-init');
-        this.emit( 'ready', this );
+Sidebar.prototype._onViewOpening = function( view ) {
+    for ( var c in this.addedClasses ) {
+        this.removeClass( c );
     }
-};
-
-Sidebar.prototype._onViewOpening = function ( view ) {
-    this.el.classList.add('animating');
-    this.el.removeAttribute('style');
+    this.el.classList.add( 'animating' );
+    this.el.removeAttribute( 'style' );
+    this._handleAnimations();
     if ( view._id !== this._currentView._id ) {
+
         // close old view
         this._prevView = this._currentView;
-        this._prevView.close( );
-        this._prevView.el.classList.add('sidebar-view-out');
+        this._prevView.close();
+        this._prevView.el.classList.add( 'sidebar-view-out' );
         this._currentView = view;
     }
-    this._handleAnimations( );
+    this.nav.innerHTML = '';
+    this.nav.appendChild( view.title );
+    view.options.menuBehaviors
+        .forEach( view.addMenuBehavior.bind( this ) );
+
+    this.started = true;
+    // indicate there is a view opening
+    this.emit( 'view.opened', view );
+    this.emit( 'view.opened.' + view._id, view );
+
 };
 
-Sidebar.prototype._onViewReady = function ( callback, err, view ) {
+Sidebar.prototype._onViewReady = function( callback, err, view ) {
+    if ( err ) {
+        view.off( 'open', this._onViewOpening.bind( this ) );
+        view.remove();
+        this.emit( 'error', err );
+        return;
+    }
     // unbind any stale handlers
     view.off( 'ready', this._onViewReady.bind( this, callback, null ) );
     view.off( 'error', this._onViewReady.bind( this, callback ) );
     if ( typeof callback === 'function' ) {
-        callback( err, res );
-    }
-    if ( err ) {
-        view.off('open', this._onViewOpening.bind( this ));
-        view.remove();
-        return this.emit( 'error', err );
+        callback( err, view );
     }
     // cache view after successful
-    this._appendView( view );
     this._cacheView( view );
+};
+
+Sidebar.prototype.init = function() {
+    // do view check
+    this.el = document.querySelector( '[data-sidebar]' );
+    this._teardownViews();
+    this._homeView = null;
+    this._currentView = null;
+    this._views = [];
+    this._viewsById = {};
+
+    // signify inialization
+    if ( this.el ) {
+        if ( !this.wrapper ) {
+            this.wrapper = document.createElement( 'div' );
+            this.wrapper.classList.add( 'sidebar-wrapper' );
+            this.el.appendChild( this.wrapper );
+        }
+        this.el.classList.add( 'sidebar-init' );
+        this.emit( 'ready', this );
+    }
 };
 });
 require.register("jacoblwe20-component-sidebar/view.js", function(exports, require, module){
-
-/* 
+/*
  * Sidebar View
  */
 
-var emitter = require('emitter');
+/* global require, module */
+
+'use strict';
+
+var emitter = require( 'emitter' );
+var extend = require( 'extend' );
 
 module.exports = SidebarView;
 
-function SidebarView ( template, options ) {
+var defaults = {
+    menuBehaviors: [ {
+        behavior: 'sidebar.back',
+        label: '&lsaquo; Back',
+        position: 'left'
+    } ],
+    back: true
+};
+
+function SidebarView( template, options ) {
+    if ( !template ) {
+        return this;
+    }
+
     emitter( this );
     this._behaviors = {};
     this._template = '' + template;
-    this._id = options.id || template.substr( 0, 5 ) + ':' + (+new Date());
-    this.el = document.createElement('div');
-    this.nav = document.createElement('nav');
-    this.content = document.createElement('div');
-    this.title = document.createElement('span');
-    
-    this.el.classList.add('sidebar-view');
-    this.nav.classList.add('sidebar-view-nav');
-    this.content.classList.add('sidebar-view-content');
+    this._id = options.id || template.substr( 0, 5 ) + ':' + ( +new Date() );
+    this.el = document.createElement( 'div' );
+    this.content = document.createElement( 'div' );
+    this.title = document.createElement( 'span' );
 
-    this.nav.appendChild( this.title );
-    this.el.appendChild( this.nav );
+    if ( !options.nav ) {
+        this.nav = document.createElement( 'nav' );
+        this.el.appendChild( this.nav );
+        this.nav.appendChild( this.title );
+    }
+    else {
+        this.nav = options.nav;
+        this.globalNav = true;
+    }
+
     this.el.appendChild( this.content );
+
+    this.nav.classList.add( 'sidebar-view-nav' );
+    this.el.classList.add( 'sidebar-view' );
+    this.el.setAttribute( 'data-view-id', this._id );
+    this.content.classList.add( 'sidebar-view-content' );
+    this._attachListeners();
     this.setOptions( options );
-    // this can intergrate any templating engine into
-    // the sidebar
-    this._attachListeners( );
     this.setContent( options.data, this.emit.bind( this, 'ready', this ) );
 }
 
 SidebarView.prototype.setCurrent =
-SidebarView.prototype.open = function( e ) {
-    this.el.classList.add('show');
-    this.emit('open', this, e );
+    SidebarView.prototype.open = function( e ) {
+        this.el.classList.add( 'show' );
+        this.emit( 'open', this, e );
 };
 
-SidebarView.prototype.setContent = function ( data, callback ) {
-    if ( typeof data === 'function' ){
+SidebarView.prototype.onRendered = function( callback ) {
+    if ( callback ) {
+        callback();
+    }
+    this.getTabableEls();
+};
+
+SidebarView.prototype.getTabableEls = function() {
+    var last,
+        first;
+    this.tabales = this.el.querySelectorAll( 'input, textarea' );
+    this.tabales = Array.prototype.slice.call( this.tabales, 0 );
+    this.tabales.forEach( function( tabable, index ) {
+        if ( index === 0 ) {
+            first = tabable;
+        }
+        tabable.setAttribute( 'tab-index', index );
+        last = tabable;
+    } );
+    if ( !last ) {
+        return;
+    }
+    last.addEventListener( 'keydown', function( e ) {
+        var keyCode = e.keyCode || e.which;
+        if ( keyCode === 9 ) {
+            e.preventDefault();
+            first.focus();
+        }
+    } );
+};
+
+SidebarView.prototype.setContent = function( data, callback ) {
+    if ( typeof data === 'function' ) {
         callback = data;
     }
-    callback = callback || function ( ) { }; 
-    if ( typeof this.render === 'function' ) { 
-        this.render( this._template, data || {}, function ( err, html ) {
+    callback = callback || function() {};
+    if ( typeof this.render === 'function' ) {
+        this._data = data;
+        this.render( this._template, data || {}, function( err, html ) {
             if ( err ) return this.emit( 'error', err, this );
             this.content.innerHTML = html;
-            setTimeout( callback, 0 );
-        }.bind( this )); 
+            setTimeout( this.onRendered.bind( this, callback ), 0 );
+        }.bind( this ) );
         return this;
     }
     this.content.innerHTML = this._template;
-    setTimeout( callback, 0 );
+    setTimeout( this.onRendered.bind( this, callback ), 0 );
 };
 
 SidebarView.prototype.close = function( e ) {
-    this.el.classList.remove('show');
-    this.emit('close', this, e );
+    this.el.classList.remove( 'show' );
+    this.emit( 'close', this, e );
 };
 
-SidebarView.prototype.remove = function ( ) {
+SidebarView.prototype.remove = function() {
+    // this helps clean up state
+    this.emit( 'close', this );
+    this.emit( 'remove', this );
     this.el.remove();
-    this.off( );
+    this.off();
 };
 
 SidebarView.prototype.isVisible =
-SidebarView.prototype.isCurrent = function ( ) {
-    // this should be accurate in the current system
-    // may need to get referance to _super
-    return this.el.classList.contains('show');
+    SidebarView.prototype.isCurrent = function() {
+        // this should be accurate in the current system
+        // may need to get referance to _super
+        return this.el.classList.contains( 'show' );
 };
 
-SidebarView.prototype.setTitle = function ( str ) {
-    this.title.innerText = str;
+SidebarView.prototype.setTitle = function( str ) {
+    this.title.innerHTML = str;
 };
 
-SidebarView.prototype.setOptions = function ( options ) {
-    this.options = options;
-    if ( Array.isArray( options.menuBehaviors ) ){
-        options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
+SidebarView.prototype.setOptions = function( options ) {
+    this.options = extend( true, {}, this.options || defaults, options );
+    if ( Array.isArray( this.options.menuBehaviors ) ) {
+        this.options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
     }
-    if ( options.parent ) this._parentView = options.parent;
+    if ( this.options.parent ) this._parentView = this.options.parent;
 
-    if ( options.title ) {
-       this.setTitle( options.title );
+    if ( this.options.title ) {
+        this.setTitle( this.options.title );
     }
 };
 
-SidebarView.prototype.addMenuBehavior = function ( options ) {
-    var button = document.createElement('button');
-    button.setAttribute('data-emit', options.behavior );
+SidebarView.prototype.addMenuBehavior = function( options ) {
+    if ( this.globalNav ) return;
+    var button = document.createElement( 'button' );
+    button.setAttribute( 'data-emit', options.behavior );
     button.innerHTML = options.label || '';
     if ( options.position ) {
-        button.style[options.position] = '0';
-    }    
+        button.style[ options.position ] = '0';
+    }
     if ( options.className ) {
         button.className = options.className;
     }
-    this._behaviors[ options.behavior ] = button;
+    //this._behaviors[ options.behavior ] = button;
     this.nav.appendChild( button );
 };
 
 // this is for the css3 animations
-SidebarView.prototype._attachListeners = function ( ) {
-    var handle = this.emit.bind( this, 'animation:complete' )
-    this.el.addEventListener('webkitAnimationEnd', handle, false);
-    this.el.addEventListener('oAnimationEnd', handle, false);
-    this.el.addEventListener('animationend', handle, false);
-    this.el.addEventListener('msAnimationEnd', handle, false);
+SidebarView.prototype._attachListeners = function() {
+    var handle = this.emit.bind( this, 'animation:complete' );
+    this.el.addEventListener( 'webkitAnimationEnd', handle, false );
+    this.el.addEventListener( 'oAnimationEnd', handle, false );
+    this.el.addEventListener( 'animationend', handle, false );
+    this.el.addEventListener( 'msAnimationEnd', handle, false );
 };
 });
+require.register("component-query/index.js", function(exports, require, module){
+function one(selector, el) {
+  return el.querySelector(selector);
+}
+
+exports = module.exports = function(selector, el){
+  el = el || document;
+  return one(selector, el);
+};
+
+exports.all = function(selector, el){
+  el = el || document;
+  return el.querySelectorAll(selector);
+};
+
+exports.engine = function(obj){
+  if (!obj.one) throw new Error('.one callback required');
+  if (!obj.all) throw new Error('.all callback required');
+  one = obj.one;
+  exports.all = obj.all;
+  return exports;
+};
+
+});
+require.register("component-matches-selector/index.js", function(exports, require, module){
+/**
+ * Module dependencies.
+ */
+
+var query = require('query');
+
+/**
+ * Element prototype.
+ */
+
+var proto = Element.prototype;
+
+/**
+ * Vendor function.
+ */
+
+var vendor = proto.matches
+  || proto.webkitMatchesSelector
+  || proto.mozMatchesSelector
+  || proto.msMatchesSelector
+  || proto.oMatchesSelector;
+
+/**
+ * Expose `match()`.
+ */
+
+module.exports = match;
+
+/**
+ * Match `el` to `selector`.
+ *
+ * @param {Element} el
+ * @param {String} selector
+ * @return {Boolean}
+ * @api public
+ */
+
+function match(el, selector) {
+  if (vendor) return vendor.call(el, selector);
+  var nodes = query.all(selector, el.parentNode);
+  for (var i = 0; i < nodes.length; ++i) {
+    if (nodes[i] == el) return true;
+  }
+  return false;
+}
+
+});
+require.register("discore-closest/index.js", function(exports, require, module){
+var matches = require('matches-selector')
+
+module.exports = function (element, selector, checkYoSelf, root) {
+  element = checkYoSelf ? {parentNode: element} : element
+
+  root = root || document
+
+  // Make sure `element !== document` and `element != null`
+  // otherwise we get an illegal invocation
+  while ((element = element.parentNode) && element !== document) {
+    if (matches(element, selector))
+      return element
+    // After `matches` on the edge case that
+    // the selector matches the root
+    // (when the root is not the document)
+    if (element === root)
+      return  
+  }
+}
+});
+require.register("component-event/index.js", function(exports, require, module){
+var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
+    prefix = bind !== 'addEventListener' ? 'on' : '';
+
+/**
+ * Bind `el` event `type` to `fn`.
+ *
+ * @param {Element} el
+ * @param {String} type
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {Function}
+ * @api public
+ */
+
+exports.bind = function(el, type, fn, capture){
+  el[bind](prefix + type, fn, capture || false);
+  return fn;
+};
+
+/**
+ * Unbind `el` event `type`'s callback `fn`.
+ *
+ * @param {Element} el
+ * @param {String} type
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {Function}
+ * @api public
+ */
+
+exports.unbind = function(el, type, fn, capture){
+  el[unbind](prefix + type, fn, capture || false);
+  return fn;
+};
+});
+require.register("honeinc-emit/index.js", function(exports, require, module){
+var Emitter = require( 'emitter' );
+var bind = require( 'event' ).bind;
+var closest = require( 'closest' );
+
+module.exports = Emit.singleton || ( Emit.singleton = new Emit() );
+
+function Emit( options ) {
+    var self = this;
+    Emitter( self );
+    
+    self.validators = [];
+    self.touchMoveDelta = 10;
+    self.initialTouchPoint = null;
+
+    bind( document, 'touchstart', self );
+    bind( document, 'touchmove', self );
+    bind( document, 'touchend', self );
+    bind( document, 'click', self );
+    bind( document, 'input', self );
+    bind( document, 'submit', self );
+}
+
+var t = function() { return true; };
+var f = function() { return false; };
+
+function GetTouchDelta( event, initial ) {
+    var deltaX = ( event.touches[ 0 ].pageX - initial.x );
+    var deltaY = ( event.touches[ 0 ].pageY - initial.y );
+    return Math.sqrt( ( deltaX * deltaX ) + ( deltaY * deltaY ) );
+}
+
+Emit.prototype.handleEvent = function( event ) {
+    var self = this;
+
+    if ( typeof( event.isPropagationStopped ) == 'undefined' )
+    {
+        event.isPropagationStopped = f;
+    }
+    
+    switch( event.type )
+    {
+        case 'touchstart':
+            var touches = event.touches;
+            
+            self.initialTouchPoint = self.lastTouchPoint = {
+                x: touches && touches.length ? touches[ 0 ].pageX : 0,
+                y: touches && touches.length ? touches[ 0 ].pageY : 0
+            };
+
+            break;
+        
+        case 'touchmove':
+            var touches = event.touches;
+    
+            if ( touches && touches.length && self.initialTouchPoint )
+            {
+                var delta = GetTouchDelta( event, self.initialTouchPoint );
+                if ( delta > self.touchMoveDelta )
+                {
+                    self.initialTouchPoint = null;
+                }
+                
+                self.lastTouchPoint = {
+                    x: touches[ 0 ].pageX,
+                    y: touches[ 0 ].pageY
+                };
+            }
+            
+            break;
+        
+        case 'click':
+        case 'touchend':
+        case 'input':
+        case 'submit':
+            // eat any late-firing click events on touch devices
+            if ( event.type == 'click' && self.lastTouchPoint )
+            {
+                if ( event.touches && event.touches.length )
+                {
+                    var delta = GetTouchDelta( event, self.lastTouchPoint );
+                    if ( delta < self.touchMoveDelta )
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return;
+                    }
+                }
+            }
+
+            var selector = '[data-emit]';
+            var originalElement = event.target || event.srcElement;
+            var forceAllowDefault = originalElement.tagName == 'INPUT' && ( originalElement.type == 'checkbox' || originalElement.type == 'radio' );
+            var el = closest( originalElement, selector, true, document );
+            
+            if ( el )
+            {
+                var depth = -1;
+                while( el && !event.isPropagationStopped() && ++depth < 100 )
+                {
+                    var validated = true;
+                    for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex )
+                    {
+                        if ( !self.validators[ validatorIndex ].call( this, el, event ) )
+                        {
+                            validated = false;
+                            break;
+                        }
+                    }
+                    
+                    // eat the event if a validator failed
+                    if ( !validated )
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() )
+                        {
+                            event.isPropagationStopped = t;
+                        }
+
+                        el = null;
+                        continue;
+                    }
+                    
+                    if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) )
+                    {
+                        el = closest( el, selector, false, document );
+                        continue;
+                    }
+                    
+                    if ( el.tagName == 'FORM' )
+                    {
+                        if ( event.type != 'submit' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
+                    else if ( el.tagName == 'INPUT' )
+                    {
+                        if ( !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) && event.type != 'input' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
+                    else if ( el.tagName == 'SELECT' )
+                    {
+                        if ( event.type != 'input' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
+
+                    event.emitTarget = el;
+                    self.Emit( el, event, forceAllowDefault );
+                    el = closest( el, selector, false, document );
+                }
+                
+                if ( depth >= 100 )
+                {
+                    console.error( 'Exceeded depth limit for Emit calls.' );
+                }
+            }
+            else
+            {
+                self.emit( 'unhandled', event );
+            }
+
+            self.initialTouchPoint = null;
+            
+            break;
+    }
+}
+
+Emit.prototype.Emit = function( element, event, forceDefault ) {
+    var self = this;
+    var optionString = element.getAttribute( 'data-emit-options' );
+    var options = {};
+    var ignoreString = element.getAttribute( 'data-emit-ignore' );
+    
+    if ( ignoreString && ignoreString.length )
+    {
+        var ignoredEvents = ignoreString.toLowerCase().split( ' ' );
+        for ( var i = 0; i < ignoredEvents.length; ++i )
+        {
+            if ( event.type == ignoredEvents[ i ] )
+            {
+                return;
+            }
+        }
+    }
+
+    if ( optionString && optionString.length )
+    {
+        var opts = optionString.toLowerCase().split( ' ' );
+        for ( var i = 0; i < opts.length; ++i )
+        {
+            options[ opts[ i ] ] = true;
+        }
+    }
+    
+    if ( !forceDefault && !options.allowdefault )
+    {
+        event.preventDefault();
+    }
+    
+    if ( !options.allowpropagate )
+    {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() )
+        {
+            event.isPropagationStopped = t;
+        }
+    }
+
+    var emissionList = element.getAttribute( 'data-emit' );
+    if ( !emissionList )
+    {
+        // allow for empty behaviors that catch events
+        return;
+    }
+
+    var emissions = emissionList.split( ',' );
+    emissions.forEach( function( emission ) {
+        self.emit( emission, event );
+    } );
+}
+
+Emit.prototype.AddValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if ( found )
+    {
+        return false;
+    }
+    
+    self.validators.push( validator );
+    return true;
+}
+
+Emit.prototype.RemoveValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            self.validators.splice( i, 1 );
+            found = true;
+            break;
+        }
+    }
+    
+    return found;
+}
+});
+require.register("andyburke-node-extend/index.js", function(exports, require, module){
+var hasOwn = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+var undefined;
+
+var isPlainObject = function isPlainObject(obj) {
+	"use strict";
+	if (!obj || toString.call(obj) !== '[object Object]' || obj.nodeType || obj.setInterval) {
+		return false;
+	}
+
+	var has_own_constructor = hasOwn.call(obj, 'constructor');
+	var has_is_property_of_method = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+	// Not own constructor property must be Object
+	if (obj.constructor && !has_own_constructor && !has_is_property_of_method) {
+		return false;
+	}
+
+	// Own properties are enumerated firstly, so to speed up,
+	// if last one is own, then all properties are own.
+	var key;
+	for (key in obj) {}
+
+	return key === undefined || hasOwn.call(obj, key);
+};
+
+module.exports = function extend() {
+	"use strict";
+	var options, name, src, copy, copyIsArray, clone,
+		target = arguments[0],
+		i = 1,
+		length = arguments.length,
+		deep = false;
+
+	// Handle a deep copy situation
+	if (typeof target === "boolean") {
+		deep = target;
+		target = arguments[1] || {};
+		// skip the boolean and the target
+		i = 2;
+	} else if (typeof target !== "object" && typeof target !== "function" || target == undefined) {
+			target = {};
+	}
+
+	for (; i < length; ++i) {
+		// Only deal with non-null/undefined values
+		if ((options = arguments[i]) != null) {
+			// Extend the base object
+			for (name in options) {
+				src = target[name];
+				copy = options[name];
+
+				// Prevent never-ending loop
+				if (target === copy) {
+					continue;
+				}
+
+				// Recurse if we're merging plain objects or arrays
+				if (deep && copy && (isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+					if (copyIsArray) {
+						copyIsArray = false;
+						clone = src && Array.isArray(src) ? src : [];
+					} else {
+						clone = src && isPlainObject(src) ? src : {};
+					}
+
+					// Never move original objects, clone them
+					target[name] = extend(deep, clone, copy);
+
+				// Don't bring in undefined values
+				} else if (copy !== undefined) {
+					target[name] = copy;
+				}
+			}
+		}
+	}
+
+	// Return the modified object
+	return target;
+};
+
+
+});
+
+
+
+
+
+
+
+
 require.alias("jacoblwe20-component-sidebar/index.js", "exampleapp/deps/sidebar/index.js");
 require.alias("jacoblwe20-component-sidebar/view.js", "exampleapp/deps/sidebar/view.js");
 require.alias("jacoblwe20-component-sidebar/index.js", "sidebar/index.js");
 require.alias("component-emitter/index.js", "jacoblwe20-component-sidebar/deps/emitter/index.js");
+
+require.alias("honeinc-emit/index.js", "jacoblwe20-component-sidebar/deps/emit/index.js");
+require.alias("discore-closest/index.js", "honeinc-emit/deps/closest/index.js");
+require.alias("discore-closest/index.js", "honeinc-emit/deps/closest/index.js");
+require.alias("component-matches-selector/index.js", "discore-closest/deps/matches-selector/index.js");
+require.alias("component-query/index.js", "component-matches-selector/deps/query/index.js");
+
+require.alias("discore-closest/index.js", "discore-closest/index.js");
+require.alias("component-emitter/index.js", "honeinc-emit/deps/emitter/index.js");
+
+require.alias("component-event/index.js", "honeinc-emit/deps/event/index.js");
+
+require.alias("andyburke-node-extend/index.js", "jacoblwe20-component-sidebar/deps/extend/index.js");
+
+require.alias("honeinc-emit/index.js", "exampleapp/deps/emit/index.js");
+require.alias("honeinc-emit/index.js", "emit/index.js");
+require.alias("discore-closest/index.js", "honeinc-emit/deps/closest/index.js");
+require.alias("discore-closest/index.js", "honeinc-emit/deps/closest/index.js");
+require.alias("component-matches-selector/index.js", "discore-closest/deps/matches-selector/index.js");
+require.alias("component-query/index.js", "component-matches-selector/deps/query/index.js");
+
+require.alias("discore-closest/index.js", "discore-closest/index.js");
+require.alias("component-emitter/index.js", "honeinc-emit/deps/emitter/index.js");
+
+require.alias("component-event/index.js", "honeinc-emit/deps/event/index.js");
+
+require.alias("andyburke-node-extend/index.js", "exampleapp/deps/extend/index.js");
+require.alias("andyburke-node-extend/index.js", "extend/index.js");

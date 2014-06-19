@@ -1,6 +1,8 @@
 {
   "name": "exampleapp",
   "dependencies": {
-    "jacoblwe20/component-sidebar" : "master"
+    "jacoblwe20/component-sidebar": "master",
+    "honeinc/emit": "*",
+    "andyburke/node-extend": "*"
   }
 }
