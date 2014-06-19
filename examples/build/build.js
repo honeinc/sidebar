@@ -681,8 +681,8 @@ require.register("jacoblwe20-component-sidebar/view.js", function(exports, requi
 
 'use strict';
 
-var emitter = require( 'emitter' );
-var extend = require( 'extend' );
+var emitter = require( 'emitter' ),
+    extend = require( 'extend' );
 
 module.exports = SidebarView;
 

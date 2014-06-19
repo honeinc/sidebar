@@ -1,0 +1,50 @@
+.animation ( @animationName : rotate, @duration : .5s, @iteration : 1, @timing : linear, @direction : normal ) {
+    -webkit-animation: @animationName @duration @iteration @timing!important;
+    -moz-animation: @animationName @duration @iteration @timing!important;
+    -o-animation: @animationName @duration @iteration @timing!important;
+    animation: @animationName @duration @iteration @timing!important;
+    -webkit-animation-direction : @direction;
+    -moz-animation-direction : @direction;
+    -o-animation-direction : @direction;
+    animation-direction : @direction;
+}
+
+.animation-timing-function ( @fn : linear ) {
+    -webkit-animation-timing-function : @fn;
+    -moz-animation-timing-function : @fn;
+    -o-animation-timing-function : @fn;
+    -ms-animation-timing-function : @fn;
+    animation-timing-function : @fn;
+}
+
+.transform(...) {
+  -webkit-transform: @arguments;
+  -moz-transform: @arguments;
+  -o-transform: @arguments;
+  -ms-transform: @arguments;
+  transform: @arguments;
+}
+
+.rotation(@deg:5deg){
+  .transform(rotate(@deg));
+}
+
+.scale(@ratio:1.5){
+  .transform(scale(@ratio));
+}
+
+.transition(@duration:0.2s, @ease:ease-out) {
+  -webkit-transition: all @duration @ease;
+  -moz-transition: all @duration @ease;
+  -o-transition: all @duration @ease;
+  transition: all @duration @ease;
+}
+
+.user-select ( @value: none ) {
+    -webkit-touch-callout: @value;
+    -webkit-user-select: @value;
+    -khtml-user-select: @value;
+    -moz-user-select: @value;
+    -ms-user-select: @value;
+    user-select: @value;
+}
