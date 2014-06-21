@@ -116,4 +116,21 @@ Now to see changes all you need to do is rebuild
 
 and refresh!
 
-### Issues please open a issue >>>>
+#### Testing
+
+To run the test you will need to install all dependecies, you will need [`nodejs`](http://nodejs.org) as well as [`npm`](http://npmjs.org). The in the root of the directory run.
+
+    $ npm install
+
+Next you will need a built version to run in the `runner.html` to do this run.
+
+    $ component install
+    $ component build
+
+This should install everything and the open up the runner file. This command may differ from system to system.
+
+    $ open tests/runner.html
+
+Once you change the files your will need to run `component build` again to see the changes in the test.
+
+##### Have a issue? report it in the issues tab.
