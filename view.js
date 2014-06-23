@@ -25,6 +25,8 @@ function SidebarView( template, options ) {
         return this;
     }
 
+    options = options || {};
+
     emitter( this );
     this._behaviors = {};
     this._template = '' + template;
