@@ -105,5 +105,122 @@ describe( 'SidebarView', function() {
                 sidebarView.close( 'hello' );
             } );
         } );
+        describe( '::isVisible', function() {
+            it( 'should return a valid representation of if the view is open or not', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                expect( sidebarView.isVisible() ).to.be( false );
+                sidebarView.open();
+                expect( sidebarView.isVisible() ).to.be( true );
+                sidebarView.close();
+                expect( sidebarView.isVisible() ).to.be( false );
+            } );
+        } );
+        describe( '::setTitle', function() {
+            it( 'should change the content of the `this.title` element', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                var title = 'Hello World';
+                sidebarView.setTitle( title );
+                expect( sidebarView.title.innerHTML ).to.be( title );
+            } );
+            it ( 'should perserve html content', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');                
+                var htmlTitle = '<p>Ahhhh</p>';
+                sidebarView.setTitle( htmlTitle );
+                expect( sidebarView.title.innerHTML ).to.be( htmlTitle );                
+            } )
+        } );
+        describe( '::addMenuBehavior', function() {
+            it( 'it should create a `button` element and append it into `this.nav`', function() {
+                var sidebarView = new SidebarView('Woot');
+                sidebarView.addMenuBehavior({});
+                expect( sidebarView.nav.hasChildNodes() ).to.be( true );
+                // this already has the default button
+                expect( sidebarView.nav.getElementsByTagName('button').length ).to.be( 2 );
+            } );
+            it( 'it should add the attribute data-emit to the new `button` element and set the value to the ' +
+                'behavior key from the options object passed into the method', function() {
+                var sidebarView = new SidebarView('Woot');
+                sidebarView.addMenuBehavior({
+                    behavior: 'omg'
+                });
+                // compensating for default button
+                var button = sidebarView.nav.getElementsByTagName('button')[ 1 ]; 
+                expect( button.getAttribute('data-emit') ).to.be( 'omg' );
+            } );
+            it( 'it should add the content of the new `button` element to the ' +
+                'label key from the options object passed into the method', function() {
+                var sidebarView = new SidebarView('Woot');
+                sidebarView.addMenuBehavior({
+                    label: 'omg'
+                });
+                // compensating for default button
+                var button = sidebarView.nav.getElementsByTagName('button')[ 1 ]; 
+                expect( button.innerHTML ).to.be( 'omg' );
+            } );
+            it( 'it should add the classes of the new `button` element to the ' +
+                'className key from the options object passed into the method', function() {
+                var sidebarView = new SidebarView('Woot');
+                sidebarView.addMenuBehavior({
+                    className: 'omg what is this'
+                });
+                // compensating for default button
+                var button = sidebarView.nav.getElementsByTagName('button')[ 1 ];
+                var classList = button.classList; 
+                expect( button.className ).to.be( 'omg what is this' );
+                expect( classList.contains('omg') ).to.be( true );
+                expect( classList.contains('what') ).to.be( true );
+                expect( classList.contains('is') ).to.be( true );
+                expect( classList.contains('this') ).to.be( true );
+                expect( classList.contains('hmmm') ).to.be( false );
+            } );
+            it( 'it should set the position of the new `button` element to the ' +
+                'position keys value from the options object passed into the method ' +
+                'as a css style with the value of 0', function() {
+                var sidebarView = new SidebarView('Woot');
+                sidebarView.addMenuBehavior({
+                    position: 'right'
+                });
+                // compensating for default button
+                var button = sidebarView.nav.getElementsByTagName('button')[ 1 ];
+                expect( button.style.right ).to.be( '0px' );
+                expect( button.style.left ).to.be( '' );
+            } );
+        } );
+        describe( '::setOptions', function() {
+            it ( 'should set values to the `this.options` object', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                var options = { 
+                    hello: 'World' 
+                };
+                sidebarView.setOptions( options );
+                expect( sidebarView.options.hello ).to.be( 'World' );
+            } );
+            it ( 'should set `this._parentView` to the parent key that is passed in the options object', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                var options = { 
+                    parent: 'parentView?' 
+                };
+                sidebarView.setOptions( options );
+                expect( sidebarView._parentView ).to.be( 'parentView?' );                
+            } );
+            it ( 'should set the content of `this.title` if a key of title is passed with the options object', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                var options = { 
+                    title: 'Helloo' 
+                };
+                sidebarView.setOptions( options );
+                expect( sidebarView.title.innerHTML ).to.be( 'Helloo' );                                
+            } );
+            it ( 'should add buttons to this `this.nav` when an Array with button object are passed to the method in the menuBehaviors key', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                var options = { 
+                    menuBehaviors: [{}, {}] 
+                };
+                console.log(sidebarView.nav.getElementsByTagName('button'));
+                sidebarView.setOptions( options );
+                // compensate for default button
+                expect( sidebarView.nav.getElementsByTagName('button').length ).to.be( 2 );
+            } )
+        } );
     });
 } );
