@@ -17,6 +17,7 @@ var defaults = {
         label: '&lsaquo; Back',
         position: 'left'
     } ],
+    autofocus: true,
     back: true
 };
 
