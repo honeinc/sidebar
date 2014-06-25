@@ -17,6 +17,7 @@ var defaults = {
         label: '&lsaquo; Back',
         position: 'left'
     } ],
+    autofocus: true,
     back: true
 };
 
@@ -60,6 +61,17 @@ SidebarView.prototype.setCurrent =
     SidebarView.prototype.open = function( e ) {
         this.el.classList.add( 'show' );
         this.emit( 'open', this, e );
+        this.once( 'animation:complete', this.onAnimationComplete.bind( this ));
+};
+
+SidebarView.prototype.onAnimationComplete = function() {
+    if ( this.options.autofocus ) {
+        var el = this.el.querySelector( 'textarea, input' );
+        if( el ){
+            el.focus();
+            el.select();
+        }
+    }
 };
 
 SidebarView.prototype.onRendered = function( callback ) {
