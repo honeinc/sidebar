@@ -176,7 +176,10 @@ SidebarView.prototype.addMenuBehavior = function( options ) {
 
 // this is for the css3 animations
 SidebarView.prototype._attachListeners = function() {
-    var handle = this.emit.bind( this, 'animation:complete' );
+    function handle( e ) {
+        setTimeout( this.emit.bind( this, 'animation:complete', e ), 0 );
+    }
+    handle = handle.bind( this );
     this.el.addEventListener( 'webkitAnimationEnd', handle, false );
     this.el.addEventListener( 'oAnimationEnd', handle, false );
     this.el.addEventListener( 'animationend', handle, false );
