@@ -151,8 +151,10 @@ SidebarView.prototype.setOptions = function( options ) {
     var els;
     this.options = extend( true, {}, this.options || defaults, options );
     if ( Array.isArray( this.options.menuBehaviors ) ) {
-        this.nav.innerHTML = "";
-        this.nav.appendChild( this.title );
+        if ( !this.globalNav ) {
+            this.nav.innerHTML = "";
+            this.nav.appendChild( this.title );            
+        }
         this.options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
     }
     if ( this.options.parent ) this._parentView = this.options.parent;
