@@ -17,6 +17,7 @@ var defaults = {
         label: '&lsaquo; Back',
         position: 'left'
     } ],
+    autofocus: true,
     back: true
 };
 
@@ -60,6 +61,17 @@ SidebarView.prototype.setCurrent =
     SidebarView.prototype.open = function( e ) {
         this.el.classList.add( 'show' );
         this.emit( 'open', this, e );
+        this.once( 'animation:complete', this.onAnimationComplete.bind( this ));
+};
+
+SidebarView.prototype.onAnimationComplete = function() {
+    if ( this.options.autofocus ) {
+        var el = this.el.querySelector( 'textarea, input' );
+        if( el ){
+            el.focus();
+            el.select();
+        }
+    }
 };
 
 SidebarView.prototype.onRendered = function( callback ) {
@@ -136,8 +148,11 @@ SidebarView.prototype.setTitle = function( str ) {
 };
 
 SidebarView.prototype.setOptions = function( options ) {
+    var els;
     this.options = extend( true, {}, this.options || defaults, options );
     if ( Array.isArray( this.options.menuBehaviors ) ) {
+        this.nav.innerHTML = "";
+        this.nav.appendChild( this.title );
         this.options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
     }
     if ( this.options.parent ) this._parentView = this.options.parent;
