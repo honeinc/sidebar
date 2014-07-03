@@ -216,7 +216,6 @@ describe( 'SidebarView', function() {
                 var options = { 
                     menuBehaviors: [{}, {}] 
                 };
-                console.log(sidebarView.nav.getElementsByTagName('button'));
                 sidebarView.setOptions( options );
                 // compensate for default button
                 expect( sidebarView.nav.getElementsByTagName('button').length ).to.be( 2 );
