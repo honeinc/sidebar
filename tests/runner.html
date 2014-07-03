@@ -1,6 +1,8 @@
 <!doctype html>
-<title>Sidebar Spec Test</title>
-<link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+<head>
+    <title>Sidebar Spec Test</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
 <body>
     <div id="mocha"></div>
     <div data-sidebar></div>
@@ -9,7 +11,6 @@
     <script src="../node_modules/expect.js/index.js"></script>
     <script>
         mocha.setup( 'bdd' );
-        mocha.reporter( 'html' );
     </script>
     <script src="view.spec.js"></script>
     <script src="index.spec.js"></script>
@@ -17,8 +18,9 @@
         mocha.globals([ 'require' ]);
         if ( window.mochaPhantomJS ) {
             mochaPhantomJS.run();
-            return;
         }
-        mocha.run();
+        else {
+            mocha.run();
+        }
     </script>
 </body>
