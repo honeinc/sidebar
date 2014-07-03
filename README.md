@@ -1,6 +1,7 @@
 ## Sidebar
 
 This is a sidebar that controls differnt sidebar views. So you can have a sidebar that looks like a mobile app. 
+[![Build Status](https://travis-ci.org/honeinc/sidebar.svg?branch=master)](https://travis-ci.org/honeinc/sidebar)
 
 ![Sidebar Gif](http://i.imgur.com/jr80xv1.gif?1?1506)
 
