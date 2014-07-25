@@ -7,6 +7,9 @@
 @sideBarBlue : rgb(78, 180,237);
 
 [data-sidebar]{
+    &:not( .sidebar-init ) {
+        display: none;
+    }
     font-family: sans-serif;
     width: 320px;
     position:fixed;
