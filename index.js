@@ -208,12 +208,14 @@ Sidebar.prototype._appendView = function( view ) {
 
 Sidebar.prototype._handleAnimations = function() {
     this._currentView.once( 'animation:complete', function() {
-        this.el.classList.remove( 'animating' );
-        this.el.classList.remove( 'back' );
         if ( this._prevView ) {
             this._prevView.el.classList.remove( 'sidebar-view-out' );
             this._prevView = null;
         }
+        setTimeout( function() {
+            this.el.classList.remove( 'animating' );
+            this.el.classList.remove( 'back' );
+        }.bind( this ), 500);
     }.bind( this ) );
 };
 
