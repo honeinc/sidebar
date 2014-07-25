@@ -6,3 +6,7 @@ before_script:
     - npm install -g mocha-phantomjs
     - component install
     - component build
+notifications:
+    slack:
+        rooms:
+            - gohone:k6kkTNlonb8PrSUb890lrpC5#tech
