@@ -313,6 +313,9 @@
   -ms-transform: translate3D(-100%, 0, 0);
   transform: translate3D(-100%, 0, 0);
 }
+[data-sidebar]:not( .sidebar-init ) {
+  display: none;
+}
 [data-sidebar].wide {
   width: 640px;
 }
