@@ -65,6 +65,7 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
 
     // this helps handling the view space
     view.on( 'open', this._onViewOpening.bind( this, view ) );
+    view.on( 'rendered', this._onViewRendered.bind( this ) );
 
     if ( isReady ) {
         this._onViewReady( callback, null, view );
@@ -265,6 +266,12 @@ Sidebar.prototype._onViewOpening = function( view ) {
     this.emit( 'view.opened', view );
     this.emit( 'view.opened.' + view._id, view );
 
+};
+
+Sidebar.prototype._onViewRendered = function( view ) {
+    // create general and namespaced event
+    this.emit( 'view.rendered', view );
+    this.emit( 'view.rendered.' + view._id, view );
 };
 
 Sidebar.prototype._onViewReady = function( callback, err, view ) {
