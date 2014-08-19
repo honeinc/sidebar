@@ -221,5 +221,17 @@ describe( 'SidebarView', function() {
                 expect( sidebarView.nav.getElementsByTagName('button').length ).to.be( 2 );
             } )
         } );
+        describe( '::onRendered', function() {
+            it ( 'should emit a `rendered` event', function( done ) {
+                var _sidebarView = new SidebarView( '<p>yeah</p>', {
+                    id: 'eh'
+                } );
+                // on `rendered` is called automatically when creating a view
+                _sidebarView.on( 'rendered', function( view ) {
+                    expect( view._id ).to.be( 'eh' ); 
+                    done( );
+                } );
+            } ); 
+        } );
     });
 } );

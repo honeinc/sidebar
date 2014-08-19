@@ -78,6 +78,7 @@ SidebarView.prototype.onRendered = function( callback ) {
     if ( callback ) {
         callback();
     }
+    this.emit( 'rendered', this );
     this.getTabableEls();
 };
 
