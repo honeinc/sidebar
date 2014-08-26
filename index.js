@@ -247,15 +247,17 @@ Sidebar.prototype._onViewOpening = function( view ) {
     }
     this.el.classList.add( 'animating' );
     this.el.removeAttribute( 'style' );
-    this._handleAnimations();
-    if ( view._id !== this._currentView._id ) {
+    if ( !this._currentView || view._id !== this._currentView._id ) {
 
         // close old view
         this._prevView = this._currentView;
-        this._prevView.close();
-        this._prevView.el.classList.add( 'sidebar-view-out' );
+        if ( this._prevView ) {
+            this._prevView.close();
+            this._prevView.el.classList.add( 'sidebar-view-out' );
+        }
         this._currentView = view;
     }
+    this._handleAnimations(); // must come after we set a _currentView
     this.nav.innerHTML = '';
     this.nav.appendChild( view.title );
     view.options.menuBehaviors
