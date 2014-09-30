@@ -7,10 +7,10 @@
     "styles": [
         "style.css"
     ],
-    "version": "0.1.3",
+    "version": "0.1.4",
     "dependencies": {
         "component/emitter": "*",
-        "honeinc/emit": "master",
+        "honeinc/emit": "0.0.12",
         "andyburke/node-extend": "1.2.2"
     }
 }
