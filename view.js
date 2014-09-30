@@ -3,7 +3,7 @@
  */
 
 /* global require, module */
-
+/* jshint -W097 */
 'use strict';
 
 var emitter = require( 'emitter' ),
@@ -158,11 +158,15 @@ SidebarView.prototype.setOptions = function( options ) {
         }
         this.options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
     }
-    if ( this.options.parent ) this._parentView = this.options.parent;
+    this.setParentView( this.options.parent );
 
     if ( this.options.title ) {
         this.setTitle( this.options.title );
     }
+};
+
+SidebarView.prototype.setParentView = function( parent ) {
+    this._parentView = parent;
 };
 
 SidebarView.prototype.addMenuBehavior = function( options ) {
