@@ -9,7 +9,7 @@
     ],
     "dependencies": {
         "component/emitter": "*",
-        "honeinc/emit": "master",
+        "honeinc/emit-bindings": "component",
         "andyburke/node-extend": "1.2.2"
     }
 }
