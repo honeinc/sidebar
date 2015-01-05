@@ -127,7 +127,7 @@ describe( 'SidebarView', function() {
                 var htmlTitle = '<p>Ahhhh</p>';
                 sidebarView.setTitle( htmlTitle );
                 expect( sidebarView.title.innerHTML ).to.be( htmlTitle );                
-            } )
+            } );
         } );
         describe( '::addMenuBehavior', function() {
             it( 'it should create a `button` element and append it into `this.nav`', function() {
@@ -219,7 +219,14 @@ describe( 'SidebarView', function() {
                 sidebarView.setOptions( options );
                 // compensate for default button
                 expect( sidebarView.nav.getElementsByTagName('button').length ).to.be( 2 );
-            } )
+            } );
+        } );
+        describe( '::setParentView', function() {
+            it ( 'should set `this._parentView` to the passed object', function() {
+                var sidebarView = new SidebarView('<p>yeah</p>');
+                sidebarView.setParentView( 'parentView?' );
+                expect( sidebarView._parentView ).to.be( 'parentView?' );                
+            } );
         } );
         describe( '::onRendered', function() {
             it ( 'should emit a `rendered` event', function( done ) {

@@ -42,8 +42,10 @@
             bottom: 124px;
         }
     }
+    .transform( translate( -100%, 0 ) ); // IE9
     .transform( translate3D( -100%, 0, 0 ) );
     &.show {
+        .transform( translate( 0, 0 ) ); // IE9
         .transform( translate3D( 0, 0, 0 ) );
         // scope animations inside animation class
         &.animating {
@@ -79,8 +81,10 @@
         max-height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
+        .transform( translate( 100%, 0 ) ); // IE9
         .transform( translate3d( 100%, 0, 0 ) );
         &.show {
+            .transform( translate( 0, 0 ) ); // IE9
             .transform( translate3d( 0, 0, 0 ) );
         }
         p {
@@ -126,8 +130,10 @@
     }
     &.back {
         .sidebar-view {
+            .transform( translate( -100%, 0 ) ); // IE9
             .transform( translate3d( -100%, 0, 0 ) );
             &.show {
+                .transform( translate( 0, 0 ) ); // IE9
                 .transform( translate3d( 0, 0, 0 ) );
             }
         }
@@ -153,7 +159,7 @@
         width: 100%;
         height: 37px;
         margin-bottom: .5em;
-        position: fixed;
+        position: absolute;
         span {
             font-size: 1.25em;
             display: table-cell;
