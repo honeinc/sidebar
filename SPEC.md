@@ -1,3 +1,4 @@
+```javascript
 var sidebar = require('./sidebar');
 
 /*
@@ -119,3 +120,4 @@ view.setParent( parentView );// set the parent view
 view.setBehavior('sidebar.new.behavior'); // what ever
 // remove view
 view.remove( );
+```
