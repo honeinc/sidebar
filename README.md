@@ -13,6 +13,8 @@ This is a sidebar that controls differnt sidebar views. So you can have a sideba
 
 ### Usage
 
+You can see the [SPEC](https://github.com/honeinc/sidebar/blob/master/SPEC.md) for full api information.
+
 First you will need an element for the sidebar to attach to. Do this by adding an attribute to a element.
 
 ```html
@@ -88,10 +90,6 @@ emit.on('open.view2', function(){
 ```
 
 You can use those types of event inside and outside of the sidebar.
-
-### Api
-
-__coming soon__
 
 ### Development
 
