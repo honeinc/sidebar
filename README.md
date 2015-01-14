@@ -5,9 +5,11 @@ This is a sidebar that controls differnt sidebar views. So you can have a sideba
 
 ![Sidebar Gif](http://i.imgur.com/jr80xv1.gif?1?1506)
 
+> Important Changes: So we are moving to [browserify](http://browserify.org), and removing component support. Also along with this change we will no longer be importing any CSS, If you would still like to the use the default css please import it into you project manually. The example CSS can be found at [/examples/style.css](https://github.com/honeinc/sidebar/blob/master/examples/style.css).
+
 ### Install
 
-    $ component install honeinc/sidebar
+    $ npm install hone-sidebar
 
 ### Usage
 
@@ -20,7 +22,7 @@ First you will need an element for the sidebar to attach to. Do this by adding a
 Then after add this javascript.
 
 ```javascript
-var Sidebar = require( 'sidebar' ),
+var Sidebar = require( 'hone-sidebar' ),
     sidebar = new Sidebar(); // make a new instance
 
 sidebar.init(); // init looks for element. [data-sidebar]

@@ -1,4 +1,5 @@
-var SidebarView = require( 'sidebar' ).SidebarView;
+var SidebarView = require( '..' ).SidebarView,
+    expect = require( 'expect.js' );
 
 describe( 'SidebarView', function() {
     it( 'should be a function', function() {

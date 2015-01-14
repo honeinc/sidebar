@@ -1,7 +1,0 @@
-{
-  "name": "exampleapp",
-  "dependencies": {
-    "honeinc/sidebar": "master",
-    "honeinc/emit": "master"
-  }
-}

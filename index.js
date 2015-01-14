@@ -4,15 +4,16 @@
 /* global Event, require, module */
 'use strict';
 
-var emitter = require( 'emitter' ),
-    emit = require( 'emit' ),
+var EventEmitter = require( 'eventemitter2' ).EventEmitter2,
+    emit = require( 'emit-bindings' ),
     SidebarView = require( './view' );
 
 module.exports = Sidebar;
 module.exports.SidebarView = SidebarView;
 
 function Sidebar() {
-    emitter( this );
+
+    EventEmitter.call( this );
     this._views = [];
     this._viewsById = {};
     this.addedClasses = {};
@@ -39,7 +40,10 @@ function Sidebar() {
         this.el.classList.add( 'sidebar-init' );
     }
     this.addListeners();
+
 }
+
+Sidebar.prototype = Object.create( EventEmitter.prototype );
 
 Sidebar.prototype.addView = function( template, opts, callback ) {
     if ( !template ) return null;

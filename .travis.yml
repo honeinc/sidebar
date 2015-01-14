@@ -1,11 +1,7 @@
 language: node_js
 node_js:
     - "0.10"
-before_script:
-    - npm install -g component@0.19.9
-    - npm install -g mocha-phantomjs
-    - component install
-    - component build
+    - "0.11"
 notifications:
     slack:
         rooms:

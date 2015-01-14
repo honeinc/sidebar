@@ -1,4 +1,18 @@
-var Sidebar = require( 'sidebar' ),
+
+/*
+    - Setup ----------------------------------------------------------
+    so the sidebar expects there to be a sidebar element on the DOM
+*/
+
+var el = document.createElement( 'div' );
+
+el.setAttribute( 'data-sidebar', 'foo' );
+document.body.appendChild( el );
+
+// end setup
+
+var Sidebar = require( '..' ),
+    expect = require( 'expect.js' ),
     sidebar;
 
 describe('Sidebar', function() {

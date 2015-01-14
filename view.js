@@ -6,7 +6,7 @@
 /* jshint -W097 */
 'use strict';
 
-var emitter = require( 'emitter' ),
+var EventEmitter = require( 'eventemitter2' ).EventEmitter2,
     extend = require( 'extend' );
 
 module.exports = SidebarView;
@@ -28,7 +28,7 @@ function SidebarView( template, options ) {
 
     options = options || {};
 
-    emitter( this );
+    EventEmitter.call( this );
     this._behaviors = {};
     this._template = '' + template;
     this._id = options.id || template.substr( 0, 5 ) + ':' + ( +new Date() );
@@ -56,6 +56,8 @@ function SidebarView( template, options ) {
     this.setOptions( options );
     this.setContent( options.data, this.emit.bind( this, 'ready', this ) );
 }
+
+SidebarView.prototype = Object.create( EventEmitter.prototype );
 
 SidebarView.prototype.setCurrent =
     SidebarView.prototype.open = function( e ) {
@@ -134,7 +136,7 @@ SidebarView.prototype.remove = function() {
     this.emit( 'close', this );
     this.emit( 'remove', this );
     this.el.remove();
-    this.off();
+    this.removeAllListeners();
 };
 
 SidebarView.prototype.isVisible =
