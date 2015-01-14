@@ -95,31 +95,11 @@ __coming soon__
 
 ### Development
 
-The development process is a little rought right now, but essentially you will need [`component`](https://github.com/component/component) & [`less`](https://github.com/less/less.js).
+So once adding your new code you can test it out on the examples. To do this run
 
-##### Download Files
+    $ npm run examples
 
-    $ git clone https://github.com/honeinc/sidebar.git
-    $ cd sidebar
-
-Next if your making a css change and have `less`.
-
-    $ lessc style.less > style.css
-
-Then you need to test you can do this by using the example directory but you will need to symlink the directory into you components to see the changes. Some of this info may differ due to `component` version and `os`.
-
-    $ cd example
-    $ component install
-    $ rm -r components/honeinc-sidebar 
-    $ ln -s ~/path-to/sidebar ~/path-to/sidebar/example/components/honeinc-sidebar
-    $ component build
-    $ open index.html
-
-Now to see changes all you need to do is rebuild
-
-    $ component build
-
-and refresh!
+Then open `/examples/index.html` to see the functioning sidebar. Once you have a working feature please test it.
 
 #### Testing
 
@@ -127,15 +107,8 @@ To run the test you will need to install all dependecies, you will need [`nodejs
 
     $ npm install
 
-Next you will need a built version to run in the `runner.html` to do this run.
+This should automatically test everything in PhantomJS.
 
-    $ component install
-    $ component build
-
-This should install everything and then open up the runner file. This command may differ from system to system.
-
-    $ open tests/runner.html
-
-Once you change the files you will need to run `component build` again to see the changes in the test.
+If you are adding something please add a test to make sure the functionality is working properly.
 
 ##### Have a issue? report it in the issues tab.

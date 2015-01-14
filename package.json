@@ -1,6 +1,6 @@
 {
   "name": "hone-sidebar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A sidebar wrapper that is used in hones editing tools",
   "main": "index.js",
   "scripts": {
@@ -13,21 +13,21 @@
     "sidebar",
     "animations"
   ],
+  "repository": {
+    "git": "https://github.com/honeinc/sidebar"
+  },
   "author": "Jacob Lowe",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^8.1.0",
-    "expect": "~0.1.1",
     "expect.js": "^0.3.1",
     "less": "^2.2.0",
-    "mocha": "~1.20.1",
     "mochify": "^2.1.1"
   },
   "dependencies": {
     "emit-bindings": "^1.1.0",
     "eventemitter2": "^0.4.14",
-    "mocha-phantomjs": "^3.5.2",
-    "node-extend": "^0.2.0",
+    "extend": "^2.0.0",
     "phantomjs": "^1.9.13"
   }
 }
