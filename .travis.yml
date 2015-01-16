@@ -5,4 +5,4 @@ node_js:
 notifications:
     slack:
         rooms:
-            - gohone:k6kkTNlonb8PrSUb890lrpC5#tech
+            - secure: "ObsrQ/duTz0JftMOjhKTpYMB/VrgBDczUD+/LGKWdFLgIJBNPIjL/pRpj+UhDtOXPY/kOnpLbyc5oCtJRtZLMFCfRN6u78aUCYTTCUuu0YUoxbp5pR9DaDAw243ytU38JMM1EkjtMHI7lxO02X3cAb6X+TBO33HAmkvumNI3BVg=" 
