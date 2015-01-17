@@ -59,6 +59,7 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
         view = new SidebarView( template, opts );
     }
     else {
+        view.close(); // just in case the view is open
         view.setOptions( opts );
     }
 
