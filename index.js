@@ -6,6 +6,7 @@
 
 var EventEmitter = require( 'eventemitter2' ).EventEmitter2,
     emit = require( 'emit-bindings' ),
+    bound = require( 'node-bound' ),
     SidebarView = require( './view' );
 
 module.exports = Sidebar;
@@ -53,7 +54,8 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
     opts.nav = this.nav;
 
     var isReady = this.isSidebarView( template ),
-        view = isReady ? template : null;
+        view = isReady ? template : null,
+        listeners = {};
 
     if ( !view ) {
         view = new SidebarView( template, opts );
@@ -68,17 +70,23 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
         this._homeView = view;
     }
 
+    function addListeners( _view ) {
+        listeners.open = [ '_onViewOpening', _view ];
+        listeners.rendered = '_onViewRendered';
+    }
+
     // this helps handling the view space
-    view.on( 'open', this._onViewOpening.bind( this, view ) );
-    view.on( 'rendered', this._onViewRendered.bind( this ) );
+    addListeners( view ); 
 
     if ( isReady ) {
         this._onViewReady( callback, null, view );
     }
     else {
-        view.once( 'ready', this._onViewReady.bind( this, callback, null ) );
-        view.once( 'error', this._onViewReady.bind( this, callback ) );
+        listeners.ready = [ '_onViewReady', callback, null ];
+        listeners.error = [ '_onViewReady', callback ];
     }
+
+    bound( view, listeners, this );
 
     // if there is no other views auto open.
     if ( !this._currentView ) {
@@ -90,10 +98,12 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
 };
 
 Sidebar.prototype.addListeners = function ( ) {
-    emit.on('sidebar.back', this.back.bind( this ));
-    emit.on('sidebar.close', this.close.bind( this ));
-    emit.on('sidebar.open', this.open.bind( this ));
-    emit.on('sidebar.toggle', this.toggle.bind( this ));
+    bound( emit, {
+        'sidebar.back': 'back',
+        'sidebar.close': 'close',
+        'sidebar.open': 'open',
+        'sidebar.toggle': 'toggle'
+    }, this );
 };
 
 Sidebar.prototype.removeView = function( view ) {
@@ -283,14 +293,18 @@ Sidebar.prototype._onViewRendered = function( view ) {
 
 Sidebar.prototype._onViewReady = function( callback, err, view ) {
     if ( err ) {
-        view.off( 'open', this._onViewOpening.bind( this ) );
+        bound.off( view, {
+            'open': '_onViewOpening'
+        }, this );
         view.remove();
         this.emit( 'error', err );
         return;
     }
     // unbind any stale handlers
-    view.off( 'ready', this._onViewReady.bind( this, callback, null ) );
-    view.off( 'error', this._onViewReady.bind( this, callback ) );
+    bound.off( view, {
+        'ready': '_onViewReady',
+        'error': '_onViewReady'  
+    }, this );
     if ( typeof callback === 'function' ) {
         callback( err, view );
     }
