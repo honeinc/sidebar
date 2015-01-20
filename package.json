@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mochify",
     "styles": "lessc examples/style.less > examples/style.css",
-    "examples": "browserify examples/index.js -o examples/bundle.js && npm run styles"
+    "examples": "browserify examples/index.js -o examples/bundle.js -d && npm run styles"
   },
   "keywords": [
     "hone",
@@ -28,6 +28,7 @@
     "emit-bindings": "^1.1.0",
     "eventemitter2": "^0.4.14",
     "extend": "^2.0.0",
-    "phantomjs": "^1.9.13"
+    "phantomjs": "^1.9.13",
+    "ymir": "^0.2.2"
   }
 }

@@ -12,11 +12,6 @@ var EventEmitter = require( 'eventemitter2' ).EventEmitter2,
 module.exports = SidebarView;
 
 var defaults = {
-    menuBehaviors: [ {
-        behavior: 'sidebar.back',
-        label: '&lsaquo; Back',
-        position: 'left'
-    } ],
     autofocus: true,
     back: true
 };
@@ -31,37 +26,30 @@ function SidebarView( template, options ) {
     EventEmitter.call( this );
     this._behaviors = {};
     this._template = '' + template;
-    this._id = options.id || template.substr( 0, 5 ) + ':' + ( +new Date() );
+    this.id = options.title;
     this.el = document.createElement( 'div' );
-    this.content = document.createElement( 'div' );
-    this.title = document.createElement( 'span' );
-
-    if ( !options.nav ) {
-        this.nav = document.createElement( 'nav' );
-        this.el.appendChild( this.nav );
-        this.nav.appendChild( this.title );
-    }
-    else {
-        this.nav = options.nav;
-        this.globalNav = true;
-    }
-
-    this.el.appendChild( this.content );
-
-    this.nav.classList.add( 'sidebar-view-nav' );
     this.el.classList.add( 'sidebar-view' );
-    this.el.setAttribute( 'data-view-id', this._id );
-    this.content.classList.add( 'sidebar-view-content' );
+    this.el.setAttribute( 'data-view-id', this.id );
     this._attachListeners();
     this.setOptions( options );
     this.setContent( options.data, this.emit.bind( this, 'ready', this ) );
 }
 
-SidebarView.prototype = Object.create( EventEmitter.prototype );
+SidebarView.prototype = Object.create( EventEmitter.prototype, {
+        get: function( ) {
+            return this._isShown; 
+        },
+        set: function( value ) { 
+            if ( value ) {
+                this.emit( 'open:shown' );
+            }
+            this._isShown = value;
+        }
+    }
+} );
 
 SidebarView.prototype.setCurrent =
     SidebarView.prototype.open = function( e ) {
-        this.el.classList.add( 'show' );
         this.emit( 'open', this, e );
         this.once( 'animation:complete', this.onAnimationComplete.bind( this ));
 };
@@ -117,17 +105,18 @@ SidebarView.prototype.setContent = function( data, callback ) {
         this._data = data;
         this.render( this._template, data || {}, function( err, html ) {
             if ( err ) return this.emit( 'error', err, this );
-            this.content.innerHTML = html;
+            this.el.innerHTML = html;
             setTimeout( this.onRendered.bind( this, callback ), 0 );
         }.bind( this ) );
         return this;
     }
-    this.content.innerHTML = this._template;
+    this.el.innerHTML = this._template;
     setTimeout( this.onRendered.bind( this, callback ), 0 );
 };
 
 SidebarView.prototype.close = function( e ) {
     this.el.classList.remove( 'show' );
+    this.el.isOpen = false;
     this.emit( 'close', this, e );
 };
 
@@ -135,7 +124,6 @@ SidebarView.prototype.remove = function() {
     // this helps clean up state
     this.emit( 'close', this );
     this.emit( 'remove', this );
-    this.el.remove();
     this.removeAllListeners();
 };
 
@@ -146,44 +134,14 @@ SidebarView.prototype.isVisible =
         return this.el.classList.contains( 'show' );
 };
 
-SidebarView.prototype.setTitle = function( str ) {
-    this.title.innerHTML = str;
-};
-
 SidebarView.prototype.setOptions = function( options ) {
     var els;
     this.options = extend( true, {}, this.options || defaults, options );
-    if ( Array.isArray( this.options.menuBehaviors ) ) {
-        if ( !this.globalNav ) {
-            this.nav.innerHTML = "";
-            this.nav.appendChild( this.title );            
-        }
-        this.options.menuBehaviors.forEach( this.addMenuBehavior.bind( this ) );
-    }
     this.setParentView( this.options.parent );
-
-    if ( this.options.title ) {
-        this.setTitle( this.options.title );
-    }
 };
 
 SidebarView.prototype.setParentView = function( parent ) {
     this._parentView = parent;
-};
-
-SidebarView.prototype.addMenuBehavior = function( options ) {
-    if ( this.globalNav ) return;
-    var button = document.createElement( 'button' );
-    button.setAttribute( 'data-emit', options.behavior );
-    button.innerHTML = options.label || '';
-    if ( options.position ) {
-        button.style[ options.position ] = '0';
-    }
-    if ( options.className ) {
-        button.className = options.className;
-    }
-    //this._behaviors[ options.behavior ] = button;
-    this.nav.appendChild( button );
 };
 
 // this is for the css3 animations

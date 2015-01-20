@@ -515,6 +515,14 @@
   margin-bottom: .5em;
   position: absolute;
 }
+[data-sidebar] nav > div {
+  padding: 12px 15px;
+  display: inline-block;
+  border-right: 1px solid #4d4d4d;
+}
+[data-sidebar] nav > div:last-child {
+  border-right: 0;
+}
 [data-sidebar] nav span {
   font-size: 1.25em;
   display: table-cell;
