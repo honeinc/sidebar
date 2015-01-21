@@ -31,6 +31,7 @@ function SidebarView( template, options ) {
     this.el.setAttribute( 'data-view-id', this.id );
     this._attachListeners();
     this.setOptions( options );
+    this.linkto = options.linkto;
     this.setContent( options.data, this.emit.bind( this, 'ready', this ) );
 }
 
