@@ -36,13 +36,7 @@ You will see a blank bar open up into view. To make views for the sidebar all yo
 ```javascript
 var html = '<p>This is html</p>',
     view1 = sidebar.addView( html, {   //options
-        title: 'My First View',        // title in the navigation bar
-        menuBehaviors: [{              // buttons on navigation
-            label: 'close'             // label of button
-            behavior: 'sidebar.close', // data-emit to trigger event
-            position: 'right'          // position of button eg. left / right
-        }],
-        home: true                     // set this as default view
+        id: 'foo',        // title in the navigation bar
     });
 // first view auto opens
 sidebar.open();
@@ -51,13 +45,7 @@ Add another view
 ```javascript
 var html2 = '<p>This more html</p>',
     view2 = sidebar.addView( html, { 
-        title: 'My Second View', 
-        menuBehaviors: [{ 
-            label: 'back' 
-            behavior: 'sidebar.back', 
-            position: 'right'
-        }],
-        parent: view1 // the parent view
+        id: 'bar', 
     });
 
 
@@ -65,22 +53,13 @@ view2.open();
 ```
 ### Talking to and from sidebar
 
-We use a library called [`emit`](https://github.com/honeinc/emit) to talk to the buttons in the nav you will see attribute like `data-emit="sidebar.back"`. This will make the sidebar go back if there is a parent view of the current view.
+We use a library called [`emit-bindings`](https://github.com/honeinc/emit-bindings) to talk to the buttons in the nav you will see attribute like `data-emit="sidebar.back"`. This will make the sidebar go back if there is a parent view of the current view.
 
 Lets say you want a nav button to go to another view. Just create a view like this.
 
 ```javascript
 var view1 = sidebar.addView( html, { 
-    title: 'My First View', 
-    menuBehaviors: [{ 
-        label: 'back' 
-        behavior: 'sidebar.back', 
-        position: 'right'
-    },{ 
-        label: 'next' 
-        behavior: 'open.view2', 
-        position: 'left'
-    }]
+    id: 'baz' 
 });
 // now use emit to bind to the `open.view2` event.
 emit.on('open.view2', function(){
