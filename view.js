@@ -24,7 +24,6 @@ function SidebarView( template, options ) {
     options = options || {};
 
     EventEmitter.call( this );
-    this._behaviors = {};
     this._template = '' + template;
     this.id = options.id || options.title;
     this.el = document.createElement( 'div' );
@@ -55,14 +54,28 @@ SidebarView.prototype.setCurrent =
         this.once( 'animation:complete', this.onAnimationComplete.bind( this ));
 };
 
-SidebarView.prototype.onAnimationComplete = function() {
-    if ( this.options.autofocus ) {
-        var el = this.el.querySelector( 'textarea, input' );
-        if( el ){
-            el.focus();
-            el.select();
-        }
-    }
+SidebarView.prototype.close = function( e ) {
+    this.el.classList.remove( 'show' );
+    this.el.isOpen = false;
+    this.emit( 'close', this, e );
+};
+
+SidebarView.prototype.remove = function() {
+    // this helps clean up state
+    this.emit( 'close', this );
+    this.emit( 'remove', this );
+    this.removeAllListeners();
+};
+
+SidebarView.prototype.setOptions = function( options ) {
+    var els;
+    this.options = extend( true, {}, this.options || defaults, options );
+    this.setParentView( this.options.parent );
+    this.linkto = options.linkto;
+};
+
+SidebarView.prototype.setParentView = function( parent ) {
+    this._parentView = parent;
 };
 
 SidebarView.prototype.onRendered = function( callback ) {
@@ -115,28 +128,14 @@ SidebarView.prototype.setContent = function( data, callback ) {
     setTimeout( this.onRendered.bind( this, callback ), 0 );
 };
 
-SidebarView.prototype.close = function( e ) {
-    this.el.classList.remove( 'show' );
-    this.el.isOpen = false;
-    this.emit( 'close', this, e );
-};
-
-SidebarView.prototype.remove = function() {
-    // this helps clean up state
-    this.emit( 'close', this );
-    this.emit( 'remove', this );
-    this.removeAllListeners();
-};
-
-SidebarView.prototype.setOptions = function( options ) {
-    var els;
-    this.options = extend( true, {}, this.options || defaults, options );
-    this.setParentView( this.options.parent );
-    this.linkto = options.linkto;
-};
-
-SidebarView.prototype.setParentView = function( parent ) {
-    this._parentView = parent;
+SidebarView.prototype.onAnimationComplete = function() {
+    if ( this.options.autofocus ) {
+        var el = this.el.querySelector( 'textarea, input' );
+        if( el ){
+            el.focus();
+            el.select();
+        }
+    }
 };
 
 // this is for the css3 animations
