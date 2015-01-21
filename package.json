@@ -22,13 +22,14 @@
     "browserify": "^8.1.0",
     "expect.js": "^0.3.1",
     "less": "^2.2.0",
-    "mochify": "^2.1.1"
+    "mochify": "^2.1.1",
+    "phantomjs": "^1.9.13"
   },
   "dependencies": {
     "emit-bindings": "^1.1.0",
     "eventemitter2": "^0.4.14",
     "extend": "^2.0.0",
-    "phantomjs": "^1.9.13",
-    "ymir": "^0.2.2"
+    "ymir": "^0.2.2",
+    "node-bound": "^0.2.2"
   }
 }
