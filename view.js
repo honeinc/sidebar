@@ -31,7 +31,6 @@ function SidebarView( template, options ) {
     this.el.setAttribute( 'data-view-id', this.id );
     this._attachListeners();
     this.setOptions( options );
-    this.linkto = options.linkto;
     this.setContent( options.data, this.emit.bind( this, 'ready', this ) );
 }
 
@@ -69,10 +68,9 @@ SidebarView.prototype.remove = function() {
 };
 
 SidebarView.prototype.setOptions = function( options ) {
-    var els;
     this.options = extend( true, {}, this.options || defaults, options );
     this.setParentView( this.options.parent );
-    this.linkto = options.linkto;
+    this.linkto = this.options.linkto;
 };
 
 SidebarView.prototype.setParentView = function( parent ) {
