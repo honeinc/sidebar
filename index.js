@@ -60,7 +60,8 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
     }
 
     // this helps handling the view space
-    view.on( 'open', this._onViewOpening.bind( this, view ) );
+    view.on( 'open', this._onViewOpeningSecondary.bind( this, view ) );
+    view.on( 'open:shown', this._onViewOpening.bind( this, view ) );
     view.on( 'rendered', this._onViewRendered.bind( this ) );
 
     if ( isReady ) {
@@ -195,6 +196,7 @@ Sidebar.prototype._handleAnimations = function() {
         }
         setTimeout( function() {
             this.el.classList.remove( 'animating' );
+            this.el.classList.remove( 'animating-secondary' );
             this.el.classList.remove( 'back' );
         }.bind( this ), 500);
     }.bind( this ) );
@@ -230,7 +232,6 @@ Sidebar.prototype._onViewOpening = function( view ) {
     for ( var c in this.addedClasses ) {
         this.removeClass( c );
     }
-    this.viewManager.open( view.id );
     this.el.classList.add( 'animating' );
     this.el.removeAttribute( 'style' );
     if ( !this._currentView || view.id !== this._currentView.id ) {
@@ -249,6 +250,11 @@ Sidebar.prototype._onViewOpening = function( view ) {
     this.emit( 'view.opened', view );
     this.emit( 'view.opened.' + view.id, view );
 
+};
+
+Sidebar.prototype._onViewOpeningSecondary = function( view ) {
+    this.el.classList.add( 'animating-secondary' );
+    this.viewManager.open( view.id );
 };
 
 Sidebar.prototype._onViewRendered = function( view ) {

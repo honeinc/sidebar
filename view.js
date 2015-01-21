@@ -36,6 +36,7 @@ function SidebarView( template, options ) {
 }
 
 SidebarView.prototype = Object.create( EventEmitter.prototype, {
+    isShown: {
         get: function( ) {
             return this._isShown; 
         },
@@ -138,6 +139,7 @@ SidebarView.prototype.setOptions = function( options ) {
     var els;
     this.options = extend( true, {}, this.options || defaults, options );
     this.setParentView( this.options.parent );
+    this.linkto = options.linkto;
 };
 
 SidebarView.prototype.setParentView = function( parent ) {
