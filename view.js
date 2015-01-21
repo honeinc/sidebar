@@ -26,7 +26,7 @@ function SidebarView( template, options ) {
     EventEmitter.call( this );
     this._behaviors = {};
     this._template = '' + template;
-    this.id = options.title;
+    this.id = options.id || options.title;
     this.el = document.createElement( 'div' );
     this.el.classList.add( 'sidebar-view' );
     this.el.setAttribute( 'data-view-id', this.id );
@@ -126,13 +126,6 @@ SidebarView.prototype.remove = function() {
     this.emit( 'close', this );
     this.emit( 'remove', this );
     this.removeAllListeners();
-};
-
-SidebarView.prototype.isVisible =
-    SidebarView.prototype.isCurrent = function() {
-        // this should be accurate in the current system
-        // may need to get referance to _super
-        return this.el.classList.contains( 'show' );
 };
 
 SidebarView.prototype.setOptions = function( options ) {
