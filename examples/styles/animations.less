@@ -35,7 +35,7 @@
 }
 
 .animation-swipe-in {
-    .animation( swipe-in, .15s, 1, ease-in-out, forwards );
+    .animation( swipe-in, .3s, 1, ease-in-out, forwards );
 }
 
 @-webkit-keyframes swipe-in-reverse {
@@ -75,7 +75,7 @@
 }
 
 .animation-swipe-in-reverse {
-    .animation( swipe-in-reverse, .15s, 1, ease-in-out, forwards );
+    .animation( swipe-in-reverse, .3s, 1, ease-in-out, forwards );
 }
 
 @-webkit-keyframes swipe-out {
@@ -115,7 +115,7 @@
 }
 
 .animation-swipe-out {
-    .animation( swipe-out, .15s, 1, ease-in-out, forwards );
+    .animation( swipe-out, .3s, 1, ease-in-out, forwards );
 }
 
 @-webkit-keyframes swipe-out-reverse {
@@ -155,5 +155,61 @@
 }
 
 .animation-swipe-out-reverse {
-    .animation( swipe-out-reverse, .15s, 1, ease-in-out, forwards );
+    .animation( swipe-out-reverse, .3s, 1, ease-in-out, forwards );
+}
+
+@-webkit-keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    .transform( translate3d(0, 15%, 0) );
+  }
+
+  100% {
+    opacity: 1;
+    .transform( none );
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    .transform( translate3d(0, 15%, 0) );
+  }
+
+  100% {
+    opacity: 1;
+    .transform( none );
+  }
+}
+
+.animation-fade-in-up {
+    .animation( fade-in-up, .3s, 1, ease-in-out, forwards );
+}
+
+@-webkit-keyframes fade-out-down {
+  0% {
+    opacity: 1;
+    .transform( none );
+  }
+
+  100% {
+    opacity: 0;
+    .transform( translate3d(0, 15%, 0) );
+  }
+}
+
+@keyframes fade-out-down {
+  0% {
+    opacity: 1;
+    .transform( none );
+  }
+
+  100% {
+    opacity: 0;
+    .transform( translate3d(0, 15%, 0) );
+  }
+}
+
+.animation-fade-out-down {
+    .animation( fade-out-down, .05s, 1, ease-in-out, forwards );
 }

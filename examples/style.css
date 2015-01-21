@@ -63,10 +63,10 @@
   }
 }
 .animation-swipe-in {
-  -webkit-animation: swipe-in 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-in 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-in 0.15s 1 ease-in-out !important;
-  animation: swipe-in 0.15s 1 ease-in-out !important;
+  -webkit-animation: swipe-in 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-in 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-in 0.3s 1 ease-in-out !important;
+  animation: swipe-in 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
@@ -137,10 +137,10 @@
   }
 }
 .animation-swipe-in-reverse {
-  -webkit-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
+  -webkit-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
@@ -211,10 +211,10 @@
   }
 }
 .animation-swipe-out {
-  -webkit-animation: swipe-out 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-out 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-out 0.15s 1 ease-in-out !important;
-  animation: swipe-out 0.15s 1 ease-in-out !important;
+  -webkit-animation: swipe-out 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-out 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-out 0.3s 1 ease-in-out !important;
+  animation: swipe-out 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
@@ -285,10 +285,102 @@
   }
 }
 .animation-swipe-out-reverse {
-  -webkit-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
+  -webkit-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -webkit-animation-direction: forwards;
+  -moz-animation-direction: forwards;
+  -o-animation-direction: forwards;
+  animation-direction: forwards;
+}
+@-webkit-keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 15%, 0);
+    -moz-transform: translate3d(0, 15%, 0);
+    -o-transform: translate3d(0, 15%, 0);
+    -ms-transform: translate3d(0, 15%, 0);
+    transform: translate3d(0, 15%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+}
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 15%, 0);
+    -moz-transform: translate3d(0, 15%, 0);
+    -o-transform: translate3d(0, 15%, 0);
+    -ms-transform: translate3d(0, 15%, 0);
+    transform: translate3d(0, 15%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+}
+.animation-fade-in-up {
+  -webkit-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  -moz-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  -o-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  animation: fade-in-up 0.3s 1 ease-in-out !important;
+  -webkit-animation-direction: forwards;
+  -moz-animation-direction: forwards;
+  -o-animation-direction: forwards;
+  animation-direction: forwards;
+}
+@-webkit-keyframes fade-out-down {
+  0% {
+    opacity: 1;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 15%, 0);
+    -moz-transform: translate3d(0, 15%, 0);
+    -o-transform: translate3d(0, 15%, 0);
+    -ms-transform: translate3d(0, 15%, 0);
+    transform: translate3d(0, 15%, 0);
+  }
+}
+@keyframes fade-out-down {
+  0% {
+    opacity: 1;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 15%, 0);
+    -moz-transform: translate3d(0, 15%, 0);
+    -o-transform: translate3d(0, 15%, 0);
+    -ms-transform: translate3d(0, 15%, 0);
+    transform: translate3d(0, 15%, 0);
+  }
+}
+.animation-fade-out-down {
+  -webkit-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  -moz-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  -o-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  animation: fade-out-down 0.05s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
@@ -301,12 +393,12 @@
   top: 0;
   bottom: 0;
   left: 0;
-  background: #313638;
+  background: lightcoral;
   transition-duration: 0.3s;
   z-index: 1000;
   font-size: 0.75em;
-  color: white;
-  overflow: visible;
+  color: dimgrey;
+  overflow: hidden;
   -webkit-transform: translate(-100%, 0);
   -moz-transform: translate(-100%, 0);
   -o-transform: translate(-100%, 0);
@@ -332,11 +424,11 @@
   padding-right: 7px;
   padding-bottom: 0;
   min-width: 100%;
-  top: 37px;
+  top: 40px;
   left: 0;
   right: 0;
   bottom: 24px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 [data-sidebar] .sidebar-wrapper.sidebar-help-open {
   bottom: 124px;
@@ -354,40 +446,60 @@
   transform: translate3D(0, 0, 0);
 }
 [data-sidebar].show.animating .sidebar-view.show {
-  -webkit-animation: swipe-in 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-in 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-in 0.15s 1 ease-in-out !important;
-  animation: swipe-in 0.15s 1 ease-in-out !important;
+  -webkit-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  -moz-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  -o-animation: fade-in-up 0.3s 1 ease-in-out !important;
+  animation: fade-in-up 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
   animation-direction: forwards;
 }
 [data-sidebar].show.animating .sidebar-view.sidebar-view-out {
-  -webkit-animation: swipe-out 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-out 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-out 0.15s 1 ease-in-out !important;
-  animation: swipe-out 0.15s 1 ease-in-out !important;
+  -webkit-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  -moz-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  -o-animation: fade-out-down 0.05s 1 ease-in-out !important;
+  animation: fade-out-down 0.05s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
   animation-direction: forwards;
 }
-[data-sidebar].show.animating.back .sidebar-view.sidebar-view-out {
-  -webkit-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
-  animation: swipe-out-reverse 0.15s 1 ease-in-out !important;
+[data-sidebar].show.animating.animating-secondary .sidebar-view.show {
+  -webkit-animation: swipe-in 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-in 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-in 0.3s 1 ease-in-out !important;
+  animation: swipe-in 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
   animation-direction: forwards;
 }
-[data-sidebar].show.animating.back .sidebar-view.show {
-  -webkit-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  -moz-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  -o-animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
-  animation: swipe-in-reverse 0.15s 1 ease-in-out !important;
+[data-sidebar].show.animating.animating-secondary .sidebar-view.sidebar-view-out {
+  -webkit-animation: swipe-out 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-out 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-out 0.3s 1 ease-in-out !important;
+  animation: swipe-out 0.3s 1 ease-in-out !important;
+  -webkit-animation-direction: forwards;
+  -moz-animation-direction: forwards;
+  -o-animation-direction: forwards;
+  animation-direction: forwards;
+}
+[data-sidebar].show.animating.animating-secondary.back .sidebar-view.sidebar-view-out {
+  -webkit-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  animation: swipe-out-reverse 0.3s 1 ease-in-out !important;
+  -webkit-animation-direction: forwards;
+  -moz-animation-direction: forwards;
+  -o-animation-direction: forwards;
+  animation-direction: forwards;
+}
+[data-sidebar].show.animating.animating-secondary.back .sidebar-view.show {
+  -webkit-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  -moz-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  -o-animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
+  animation: swipe-in-reverse 0.3s 1 ease-in-out !important;
   -webkit-animation-direction: forwards;
   -moz-animation-direction: forwards;
   -o-animation-direction: forwards;
@@ -395,7 +507,8 @@
 }
 [data-sidebar] .sidebar-view {
   min-height: 100%;
-  background-color: inherit;
+  background-color: lightcoral;
+  color: lavenderblush;
   position: absolute;
   top: 0;
   left: 0;
@@ -429,7 +542,7 @@
   transform: translate3d(0, 0, 0);
 }
 [data-sidebar] .sidebar-view p {
-  color: #b1b2b3;
+  color: lavenderblush;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -496,44 +609,28 @@
   color: #fff;
   border: 0;
   border-radius: 3px;
-  background: #4d4d4d;
+  background: lightpink;
   padding: 5px 10px;
   display: inline-block;
   width: auto;
   font-size: 12px;
   margin: 5px 7px 5px 5px;
 }
-[data-sidebar] button.bright-button {
-  background: #4eb4ed;
-}
 [data-sidebar] nav {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  border-bottom: 1px solid lightpink;
+  background: lightpink;
   display: table;
   width: 100%;
-  height: 37px;
+  height: 39px;
   margin-bottom: .5em;
   position: absolute;
 }
 [data-sidebar] nav > div {
   padding: 12px 15px;
   display: inline-block;
-  border-right: 1px solid #4d4d4d;
+  border-right: 1px solid lightpink;
 }
-[data-sidebar] nav > div:last-child {
-  border-right: 0;
-}
-[data-sidebar] nav span {
-  font-size: 1.25em;
-  display: table-cell;
-  vertical-align: middle;
-  font-weight: 400;
-  text-transform: uppercase;
-  padding-top: 3px;
-  letter-spacing: 1px;
-  color: #b1b2b3;
-}
-[data-sidebar] nav button {
-  position: absolute;
-  top: 0;
+[data-emit],
+[data-linkto] {
+  cursor: pointer;
 }

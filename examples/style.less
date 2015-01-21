@@ -1,10 +1,10 @@
 @import "styles/mixins";
 @import "styles/animations";
 
-@darkGrey : rgb( 49, 54, 56);
-@lightGrey : rgb(177, 178, 179);
-@neutralGrey : rgb(77, 77, 77);
-@sideBarBlue : rgb(78, 180,237);
+@darkGrey : lightcoral;
+@lightGrey : lavenderblush;
+@neutralGrey : lightpink;
+@white: dimgrey;
 
 [data-sidebar]{
     &:not( .sidebar-init ) {
@@ -20,8 +20,8 @@
     transition-duration: 0.3s;
     z-index: 1000;
     font-size: 0.75em;
-    color: white;
-    overflow: visible;
+    color: @white;
+    overflow: hidden;
     &.wide {
         width: 640px;
     }
@@ -33,11 +33,11 @@
         padding-right: 7px;
         padding-bottom: 0;
         min-width: 100%;
-        top: 37px;
+        top: 40px;
         left: 0;
         right: 0;
         bottom: 24px;
-        overflow-x: hidden;
+        overflow: hidden;
         &.sidebar-help-open {
             bottom: 124px;
         }
@@ -51,27 +51,38 @@
         &.animating {
             .sidebar-view {
                 &.show {
-                    .animation-swipe-in();
+                    .animation-fade-in-up();
                 }
                 &.sidebar-view-out {
-                    .animation-swipe-out();
+                    .animation-fade-out-down();
                 }
             }
-            &.back {
+            &.animating-secondary {
                 .sidebar-view {
-                    &.sidebar-view-out {
-                        .animation-swipe-out-reverse();
-                    }
                     &.show {
-                        .animation-swipe-in-reverse();
+                        .animation-swipe-in();
+                    }
+                    &.sidebar-view-out {
+                        .animation-swipe-out();
                     }
                 }
+                &.back {
+                    .sidebar-view {
+                        &.sidebar-view-out {
+                            .animation-swipe-out-reverse();
+                        }
+                        &.show {
+                            .animation-swipe-in-reverse();
+                        }
+                    }
+                }                
             }
         }
     }
     .sidebar-view {
         min-height: 100%;
-        background-color: inherit;
+        background-color: @darkGrey;
+        color: @lightGrey;
         position: absolute;
         top: 0;
         left: 0;
@@ -148,40 +159,23 @@
         width: auto;
         font-size: 12px;
         margin: 5px 7px 5px 5px;
-        &.bright-button {
-            background: @sideBarBlue;
-        }
     }
     nav {
-        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        text-align: center;
+        border-bottom: 1px solid @neutralGrey;
+        background: @neutralGrey;
         display: table;
         width: 100%;
-        height: 37px;
+        height: 39px;
         margin-bottom: .5em;
         position: absolute;
         > div {
             padding: 12px 15px;
             display: inline-block;
             border-right: 1px solid @neutralGrey;
-            &:last-child {
-                border-right: 0;
-            }
-        }
-        span {
-            font-size: 1.25em;
-            display: table-cell;
-            vertical-align: middle;
-            font-weight: 400;
-            text-transform: uppercase;
-            padding-top: 3px;
-            letter-spacing: 1px;
-            color: @lightGrey;
-        }
-        button {
-            position: absolute;
-            top: 0;
         }
     }
+}
+[data-emit], [data-linkto]{
+    cursor: pointer;
 }
 
