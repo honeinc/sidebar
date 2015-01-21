@@ -6,6 +6,7 @@
 
 var EventEmitter = require( 'eventemitter2' ).EventEmitter2,
     emit = require( 'emit-bindings' ),
+    Ymir = require( 'ymir' ).Ymir,
     bound = require( 'node-bound' ),
     SidebarView = require( './view' );
 
@@ -15,19 +16,14 @@ module.exports.SidebarView = SidebarView;
 function Sidebar() {
 
     EventEmitter.call( this );
-    this._views = [];
-    this._viewsById = {};
-    this.addedClasses = {};
 
     // do view check
     this.el = document.querySelector( '[data-sidebar]' );
+    this.nav = document.createElement( 'nav' );
     this._teardownViews();
     this._homeView = null;
     this._currentView = null;
-    this._views = [];
-    this._viewsById = {};
-
-    this.nav = document.createElement( 'nav' );
+    this.addedClasses = {};
 
     // signify inialization
     if ( this.el ) {
@@ -35,13 +31,11 @@ function Sidebar() {
 
         if ( !this.wrapper ) {
             this.wrapper = document.createElement( 'div' );
-            this.wrapper.classList.add( 'sidebar-wrapper' );
             this.el.appendChild( this.wrapper );
         }
         this.el.classList.add( 'sidebar-init' );
     }
     this.addListeners();
-
 }
 
 Sidebar.prototype = Object.create( EventEmitter.prototype );
@@ -50,7 +44,6 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
     if ( !template ) return null;
 
     opts = opts || {};
-    // globalish nav
     opts.nav = this.nav;
 
     var isReady = this.isSidebarView( template ),
@@ -61,21 +54,19 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
         view = new SidebarView( template, opts );
     }
     else {
-        view.close(); // just in case the view is open
         view.setOptions( opts );
     }
-
 
     if ( ( opts && opts.home ) || !this._homeView || view.options.home ) {
         this._homeView = view;
     }
 
     function addListeners( _view ) {
-        listeners.open = [ '_onViewOpening', _view ];
+        listeners.open = [ '_onViewOpeningSecondary', _view ];
+        listeners[ 'open:shown' ] = [ '_onViewOpening', _view ];
         listeners.rendered = '_onViewRendered';
     }
 
-    // this helps handling the view space
     addListeners( view ); 
 
     if ( isReady ) {
@@ -85,14 +76,7 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
         listeners.ready = [ '_onViewReady', callback, null ];
         listeners.error = [ '_onViewReady', callback ];
     }
-
     bound( view, listeners, this );
-
-    // if there is no other views auto open.
-    if ( !this._currentView ) {
-        this._currentView = view;
-        view.open();
-    }
 
     return view;
 };
@@ -107,35 +91,25 @@ Sidebar.prototype.addListeners = function ( ) {
 };
 
 Sidebar.prototype.removeView = function( view ) {
-    // dont bother if not a proper view
-    if ( !this.isSidebarView( view ) ) return;
-    var id = view._id;
-
-    function outView( _view ) {
-        if ( id === _view.id ) return false;
-        return true;
-    }
-
+    var id = typeof view === 'string' ? view :  view.id;
+    this.viewManager.removeView( id );
+    
     // if remove view is current go to home
-    if ( this._currentView._id === view.id ) {
+    if ( this._currentView.id === view.id ) {
         this.home();
     }
-
-    if ( this._viewsById[ id ] ) delete this._viewsById[ id ];
-    this._views = this._views.filter( outView );
-    view.remove();
 };
 
 Sidebar.prototype.setCurrentView = function( view ) {
-    var id = view._id,
-        _view = this._viewsById[ id ];
-    if ( _view ) {
-        _view.open();
+    var id = view.id,
+        opened = this.viewManager.open( id );
+    if ( opened ) {
+        this._currentView = view;
     }
 };
 
 Sidebar.prototype.getView = function( id ) {
-    return this._viewsById[ id ];
+    return this.viewManager.views[ id ];
 };
 
 Sidebar.prototype.getCurrentView = function() {
@@ -144,8 +118,8 @@ Sidebar.prototype.getCurrentView = function() {
 
 Sidebar.prototype.home = function() {
     if ( !this.isSidebarView( this._homeView ) ) return;
-    if ( this._currentView._id === this._homeView._id ) return;
-    this._homeView.open();
+    if ( this._currentView.id === this._homeView.id ) return;
+    this.viewManager.open( this._homeView.id );
 };
 
 Sidebar.prototype.back = function() {
@@ -230,6 +204,7 @@ Sidebar.prototype._handleAnimations = function() {
         }
         setTimeout( function() {
             this.el.classList.remove( 'animating' );
+            this.el.classList.remove( 'animating-secondary' );
             this.el.classList.remove( 'back' );
         }.bind( this ), 500);
     }.bind( this ) );
@@ -237,21 +212,26 @@ Sidebar.prototype._handleAnimations = function() {
 
 Sidebar.prototype._cacheView = function( view ) {
     // no doups
-    if ( this._viewsById[ view._id ] ) {
-        this._viewsById[ view._id ].remove();
+    if ( this.viewManager.views[ view.id ] ) {
+        return;
+    }
+    
+    this.viewManager.addView( view );
+
+    // if there is no other views auto open.
+    if ( !this._currentView ) {
+        this._currentView = view;
+        this.viewManager.open( view.id );
     }
 
-    this._appendView( view );
-    this._viewsById[ view._id ] = view;
-    this._views.push( view );
     this.emit( 'view.added', view );
     return view;
 };
 
 Sidebar.prototype._teardownViews = function() {
-    if ( !this._views.length ) return;
-    this._views.forEach( function( view ) {
-        view.remove();
+    if ( !this.viewManager || !this.viewManager.viewList.length ) return;
+    this.viewManager.viewList.forEach( function( view ) {
+        this.viewManager.removeView( view.id );
         this.emit( 'view.removed', view );
     }.bind( this ) );
 };
@@ -262,7 +242,7 @@ Sidebar.prototype._onViewOpening = function( view ) {
     }
     this.el.classList.add( 'animating' );
     this.el.removeAttribute( 'style' );
-    if ( !this._currentView || view._id !== this._currentView._id ) {
+    if ( !this._currentView || view.id !== this._currentView.id ) {
 
         // close old view
         this._prevView = this._currentView;
@@ -273,22 +253,22 @@ Sidebar.prototype._onViewOpening = function( view ) {
         this._currentView = view;
     }
     this._handleAnimations(); // must come after we set a _currentView
-    this.nav.innerHTML = '';
-    this.nav.appendChild( view.title );
-    view.options.menuBehaviors
-        .forEach( view.addMenuBehavior.bind( this ) );
-
     this.started = true;
     // indicate there is a view opening
     this.emit( 'view.opened', view );
-    this.emit( 'view.opened.' + view._id, view );
+    this.emit( 'view.opened.' + view.id, view );
 
+};
+
+Sidebar.prototype._onViewOpeningSecondary = function( view ) {
+    this.el.classList.add( 'animating-secondary' );
+    this.viewManager.open( view.id );
 };
 
 Sidebar.prototype._onViewRendered = function( view ) {
     // create general and namespaced event
     this.emit( 'view.rendered', view );
-    this.emit( 'view.rendered.' + view._id, view );
+    this.emit( 'view.rendered.' + view.id, view );
 };
 
 Sidebar.prototype._onViewReady = function( callback, err, view ) {
@@ -325,10 +305,14 @@ Sidebar.prototype.init = function() {
     if ( this.el ) {
         if ( !this.wrapper ) {
             this.wrapper = document.createElement( 'div' );
-            this.wrapper.classList.add( 'sidebar-wrapper' );
             this.el.appendChild( this.wrapper );
         }
         this.el.classList.add( 'sidebar-init' );
+        this.viewManager = new Ymir( {
+          el: this.wrapper,
+          listEl: this.nav,
+          className: 'sidebar-wrapper'
+        } );
         this.emit( 'ready', this );
     }
 };

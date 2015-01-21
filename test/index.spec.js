@@ -34,13 +34,9 @@ describe('Sidebar', function() {
                 expect( typeof sidebar.init ).to.be( 'function' );
             } );
             it( 'should clear out any data in cache', function() {
-                sidebar._views.push({ remove: function(){}});
-                sidebar._viewsById.test = 1;
                 sidebar._currentView = 'hello';
                 sidebar._homeView = 'world';
                 sidebar.init();
-                expect( sidebar._views.length ).to.be( 0 );
-                expect( sidebar._viewsById.test ).to.be( undefined );
                 expect( sidebar._currentView ).to.be( null );
                 expect( sidebar._homeView ).to.be( null );
             });
