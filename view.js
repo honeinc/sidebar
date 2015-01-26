@@ -68,10 +68,9 @@ SidebarView.prototype.remove = function() {
 };
 
 SidebarView.prototype.setOptions = function( options ) {
-    var els;
     this.options = extend( true, {}, this.options || defaults, options );
     this.setParentView( this.options.parent );
-    this.linkto = options.linkto;
+    this.linkto = this.options.linkto;
 };
 
 SidebarView.prototype.setParentView = function( parent ) {
