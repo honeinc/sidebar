@@ -1,6 +1,6 @@
 {
   "name": "hone-sidebar",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A sidebar wrapper that is used in hones editing tools",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "emit-bindings": "^1.1.0",
     "eventemitter2": "^0.4.14",
     "extend": "^2.0.0",
-    "ymir": "^0.2.2",
+    "ymir": "^0.3.x",
     "node-bound": "^0.2.2"
   }
 }
