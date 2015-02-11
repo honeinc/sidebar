@@ -65,9 +65,12 @@ Sidebar.prototype.addView = function( template, opts, callback ) {
         listeners.open = [ '_onViewOpeningSecondary', _view ];
         listeners[ 'open:shown' ] = [ '_onViewOpening', _view ];
         listeners.rendered = '_onViewRendered';
+        _view._listenersAdded = true;
     }
 
-    addListeners( view ); 
+    if ( !view._listenersAdded ) {
+        addListeners( view ); 
+    }
 
     if ( isReady ) {
         this._onViewReady( callback, null, view );
