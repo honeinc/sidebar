@@ -1,4 +1,6 @@
-var sidebar = new (require('..')),
+'use strict';
+
+var sidebar = new (require('..'))(),
     emit = require('emit-bindings');
 sidebar.init();
 
@@ -15,7 +17,7 @@ var view2html =
 '<ul>' +
     '<li data-emit="open.view3">' + 
         'Child View >' +
-    '</li>'
+    '</li>' +
 '</ul>';
 var view3html = 
 '<ul>' +
@@ -41,6 +43,7 @@ var view3 = sidebar.addView( view3html, {
 });
 
 // opening up view when event is emitted
+emit.on( 'open.view1', view1.open.bind( view2 ) );
 emit.on( 'open.view2', view2.open.bind( view2 ) );
 emit.on( 'open.view3', view3.open.bind( view3 ) );
 sidebar.open( );
