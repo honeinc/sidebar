@@ -1,6 +1,6 @@
 {
   "name": "hone-sidebar",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A sidebar wrapper that is used in hones editing tools",
   "main": "index.js",
   "scripts": {
