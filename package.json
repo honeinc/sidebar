@@ -29,7 +29,7 @@
     "emit-bindings": "^1.1.0",
     "eventemitter2": "^0.4.14",
     "extend": "^2.0.0",
-    "ymir": "^0.3.x",
-    "node-bound": "^1.0.2"
+    "node-bound": "^1.0.2",
+    "ymir": "^0.3.2"
   }
 }
